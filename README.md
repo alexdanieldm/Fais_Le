@@ -18,7 +18,7 @@ npx react-native run-android
 ```  
 
 ### Caveats
-* _**IMPORTANT: This app uses "ListView" and "AsyncStorage", both are deprecated and no longer maintained by the Official React Native Team, thus all instances of "ListView" and "AsyncStorage" are imported from a community library  **_  
+* _**IMPORTANT: This app uses "ListView" and "AsyncStorage", both are deprecated and no longer maintained by the Official React Native Team, thus all instances of "ListView" and "AsyncStorage" are imported from a community library**_  
 
 * A better experience can be achieved using React Native v0.60 or earlier
   * If you choose to go this route please remember to comment line 14 and 15 on the App.js file, they should look like this  
