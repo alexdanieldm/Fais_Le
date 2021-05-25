@@ -1,29 +1,74 @@
 import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+const Footer = (props) => {
+  
+  const {filter} = props;
 
-const Footer = ( { author } ) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
-        <Text style={styles.content}>Made by {author} &copy; {new Date().getFullYear()}</Text>
+      <View style={styles.container}>
+
+        <Text>
+          {props.count} count
+        </Text>
+
+        <View style={styles.filters}>
+          
+          <TouchableOpacity
+            style={[styles.filter, filter === 'ALL' && styles.selected]}
+            onPress={() => props.onFilter('ALL')}
+          >
+
+            <Text>All</Text>
+          
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[styles.filter, filter === 'ACTIVE' && styles.selected]}
+            onPress={() => props.onFilter('ACTIVE')}
+          >
+
+            <Text>Active</Text>
+
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[styles.filter, filter === 'COMPLETED' && styles.selected]}
+            onPress={() => props.onFilter('COMPLETED')}
+          >
+            <Text>Completed</Text>
+
+          </TouchableOpacity>
+
+        </View>
+        
+        <TouchableOpacity onPress={props.onClearComplete}>
+          
+          <Text>Clear Completed</Text>
+        
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgb(0, 51, 77)',
-    paddingVertical: 5,
+    padding: 16,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
-
-  content: {
-    color: 'white',
-    fontSize: 10,
+  filters: {
+    flexDirection: 'row',
+  },
+  filter: {
+    padding: 8,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  selected: {
+    borderColor: 'rgba(175, 47, 47, .2)',
   },
 });
 
