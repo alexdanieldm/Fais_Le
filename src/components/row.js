@@ -8,21 +8,20 @@ import {
   TextInput,
 } from 'react-native';
 
-class Row extends Component {
-  render() {
-    const {complete} = this.props;
+const Row = ( props ) => {
+  const {complete} = props;
     const textComponent = (
       <TouchableOpacity
         style={styles.textWrap}
-        onLongPress={() => this.props.onToggleEdit(true)}
+        onLongPress={() => props.onToggleEdit(true)}
       >
         <Text style={[styles.text, complete && styles.complete]}>
-          {this.props.text}
+          {props.text}
         </Text>
       </TouchableOpacity>
     );
     const removeButton = (
-      <TouchableOpacity onPress={this.props.onRemove}>
+      <TouchableOpacity onPress={props.onRemove}>
         <Text style={styles.destroy}>X</Text>
       </TouchableOpacity>
     );
@@ -30,9 +29,9 @@ class Row extends Component {
     const editingComponent = (
       <View style={styles.textWrap}>
         <TextInput
-          onChangeText={this.props.onUpdate}
+          onChangeText={props.onUpdate}
           autoFocus
-          value={this.props.text}
+          value={props.text}
           style={styles.input}
           multiline
         />
@@ -42,21 +41,21 @@ class Row extends Component {
     const doneButton = (
       <TouchableOpacity
         style={styles.done}
-        onPress={() => this.props.onToggleEdit(false)}
+        onPress={() => props.onToggleEdit(false)}
       >
         <Text style={styles.doneText}>Save</Text>
       </TouchableOpacity>
     );
-
-    return (
-      <View style={styles.container}>
-        <Switch value={complete} onValueChange={this.props.onComplete} />
-        {this.props.editing ? editingComponent : textComponent}
-        {this.props.editing ? doneButton : removeButton}
+  
+  return(
+    <View style={styles.container}>
+        <Switch value={complete} onValueChange={props.onComplete} />
+        {props.editing ? editingComponent : textComponent}
+        {props.editing ? doneButton : removeButton}
       </View>
-    );
-  }
+  )
 }
+
 const styles = StyleSheet.create({
   container: {
     padding: 10,
