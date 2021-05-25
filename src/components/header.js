@@ -7,25 +7,25 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-class Header extends Component {
-  render() {
-    return (
-      <View style={styles.header}>
-        <TouchableOpacity onPress={this.props.onToggleAllComplete}>
+
+const Header = ( props ) => {
+  
+  return(
+    <View style={styles.header}>
+        <TouchableOpacity onPress={props.onToggleAllComplete}>
           <Text style={styles.toggleIcon}>{String.fromCharCode(10003)}</Text>
         </TouchableOpacity>
         <TextInput
-          value={this.props.value}
-          onChangeText={this.props.onChange}
-          onSubmitEditing={this.props.onAddItem}
+          value={props.value}
+          onChangeText={props.onChange}
+          onSubmitEditing={props.onAddItem}
           placeholder="What needs to be done?"
           blurOnSubmit={false}
           returnKeyType="done"
           style={styles.input}
         />
       </View>
-    );
-  }
+  )
 }
 
 const styles = StyleSheet.create({
