@@ -14,9 +14,9 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListView from 'deprecated-react-native-listview';
 
-import Header from './header';
-import Footer from './footer';
-import Row from './row';
+import Header from './components/header';
+import Footer from './components/footer';
+import Row from './components/row';
 
 const filterItems = (filter, items) => {
   return items.filter((item) => {
