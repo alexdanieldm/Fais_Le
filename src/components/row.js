@@ -1,3 +1,4 @@
+import React from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, TextInput } from 'react-native';
 
 const ToDoItem = ( {complete, onToggleEdit, text} ) => (

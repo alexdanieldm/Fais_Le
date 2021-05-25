@@ -1,34 +1,51 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
 const Footer = (props) => {
+  
   const {filter} = props;
 
   return (
       <View style={styles.container}>
-        <Text>{props.count} count</Text>
+
+        <Text>
+          {props.count} count
+        </Text>
+
         <View style={styles.filters}>
+          
           <TouchableOpacity
             style={[styles.filter, filter === 'ALL' && styles.selected]}
             onPress={() => props.onFilter('ALL')}
           >
+
             <Text>All</Text>
+          
           </TouchableOpacity>
+          
           <TouchableOpacity
             style={[styles.filter, filter === 'ACTIVE' && styles.selected]}
             onPress={() => props.onFilter('ACTIVE')}
           >
+
             <Text>Active</Text>
+
           </TouchableOpacity>
+          
           <TouchableOpacity
             style={[styles.filter, filter === 'COMPLETED' && styles.selected]}
             onPress={() => props.onFilter('COMPLETED')}
           >
             <Text>Completed</Text>
+
           </TouchableOpacity>
+
         </View>
+        
         <TouchableOpacity onPress={props.onClearComplete}>
+          
           <Text>Clear Completed</Text>
+        
         </TouchableOpacity>
       </View>
   )
