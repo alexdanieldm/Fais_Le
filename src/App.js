@@ -37,18 +37,20 @@ const App = () => {
 
 	const [ state, setState ] = useState(_state);
 
-	// useEffect(() => {
-	// 	AsyncStorage.getItem('items').then((json) => {
-	// 		try {
-	// 			const items = JSON.parse(json);
-	// 			setSource(items, items, { loading: false });
-	// 		} catch (e) {
-	// 			setState({
-	// 				loading: false
-	// 			});
-	// 		}
-	// 	});
-	// });
+	useEffect(() => {
+		AsyncStorage.getItem('items').then((json) => {
+			try {
+				const items = JSON.parse(json);
+				setSource(items, items, { loading: false });
+			} catch (e) {
+				setState({
+					...state,
+					loading: false
+				});
+				console.log('loading: false');
+			}
+		});
+	}, []);
 
 	const handleUpdateText = (key, text) => {
 		const newItems = state.items.map((item) => {
