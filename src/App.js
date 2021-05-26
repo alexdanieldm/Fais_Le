@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, Platform, Keyboard } from 'react-native';
 
 // Libreries for deprecdeprecated React Native Components
@@ -24,32 +24,31 @@ const filterItems = (filter, items) => {
 };
 
 const App = () => {
-
 	const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
-	const initialState = {
-		loading: true,
+	const _state = {
+		loading: false,
 		allComplete: false,
 		filter: 'ALL',
 		value: '',
 		items: [],
 		dataSource: ds.cloneWithRows([])
-	}
-	
-	const [state, setState] = useState(initialState);
+	};
 
-	useEffect( () => {
-		AsyncStorage.getItem('items').then((json) => {
-			try {
-				const items = JSON.parse(json);
-				setSource(items, items, { loading: false });
-			} catch (e) {
-				setState({
-					loading: false
-				});
-			}
-		},[]);
-	})
+	const [ state, setState ] = useState(_state);
+
+	// useEffect(() => {
+	// 	AsyncStorage.getItem('items').then((json) => {
+	// 		try {
+	// 			const items = JSON.parse(json);
+	// 			setSource(items, items, { loading: false });
+	// 		} catch (e) {
+	// 			setState({
+	// 				loading: false
+	// 			});
+	// 		}
+	// 	});
+	// });
 
 	const handleUpdateText = (key, text) => {
 		const newItems = state.items.map((item) => {
@@ -63,7 +62,7 @@ const App = () => {
 		});
 
 		setSource(newItems, filterItems(state.filter, newItems));
-	}
+	};
 
 	const handleToggleEditing = (key, editing) => {
 		const newItems = state.items.map((item) => {
@@ -77,29 +76,30 @@ const App = () => {
 		});
 
 		setSource(newItems, filterItems(state.filter, newItems));
-	}
+	};
 
 	const setSource = (items, itemsDatasource, otherState = {}) => {
 		setState({
+			...state,
 			items,
 			dataSource: state.dataSource.cloneWithRows(itemsDatasource),
 			...otherState
 		});
 
 		AsyncStorage.setItem('items', JSON.stringify(items));
-	}
+	};
 
 	const handleClearComplete = () => {
 		const newItems = filterItems('ACTIVE', state.items);
 
 		setSource(newItems, filterItems(state.filter, newItems));
-	}
+	};
 
 	const handleFilter = (filter) => {
 		setSource(state.items, filterItems(filter, state.items), {
 			filter
 		});
-	}
+	};
 
 	const handleRemoveItem = (key) => {
 		const newItems = state.items.filter((item) => {
@@ -107,7 +107,7 @@ const App = () => {
 		});
 
 		setSource(newItems, filterItems(state.filter, newItems));
-	}
+	};
 
 	const handleToggleComplete = (key, complete) => {
 		const newItems = state.items.map((item) => {
@@ -121,7 +121,7 @@ const App = () => {
 		});
 
 		setSource(newItems, filterItems(state.filter, newItems));
-	}
+	};
 
 	const handleToggleAllComplete = () => {
 		const complete = !state.allComplete;
@@ -133,7 +133,7 @@ const App = () => {
 		setSource(newItems, filterItems(state.filter, newItems), {
 			allComplete: complete
 		});
-	}
+	};
 
 	const handleAddItem = () => {
 		if (!state.value) {
@@ -152,20 +152,18 @@ const App = () => {
 		setSource(newItems, filterItems(state.filter, newItems), {
 			value: ''
 		});
-	}
-	
+	};
+
 	return (
 		<View style={styles.container}>
-			
 			<Header
 				value={state.value}
 				onAddItem={handleAddItem}
-				onChange={(value) => setState({ value })}
+				onChange={(value) => setState({ ...state, value: value })}
 				onToggleAllComplete={handleToggleAllComplete}
 			/>
 
 			<View style={styles.content}>
-
 				<ListView
 					style={styles.list}
 					enableEmptySections
@@ -187,7 +185,6 @@ const App = () => {
 						return <View key={rowId} style={styles.separator} />;
 					}}
 				/>
-
 			</View>
 
 			<Footer
@@ -202,10 +199,9 @@ const App = () => {
 					<ActivityIndicator animating size="large" />
 				</View>
 			)}
-	
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {

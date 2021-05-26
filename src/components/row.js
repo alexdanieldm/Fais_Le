@@ -1,46 +1,44 @@
 import React from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, TextInput } from 'react-native';
 
-const ToDoItem = ( {complete, onToggleEdit, text} ) => (
+const Item = ({ complete, onToggleEdit, text }) => (
 	<TouchableOpacity style={styles.textWrap} onLongPress={() => onToggleEdit(true)}>
-		<Text style={[ styles.text, complete && styles.complete ]}>
-			{text}
-		</Text>
+		<Text style={[ styles.text, complete && styles.complete ]}>{text}</Text>
 	</TouchableOpacity>
 );
 
-const RemoveButton = ({onRemove}) => (
+const RemoveButton = ({ onRemove }) => (
 	<TouchableOpacity onPress={onRemove}>
 		<Text style={styles.destroy}>X</Text>
 	</TouchableOpacity>
 );
 
-const EditButton = ( {text, onUpdate} ) => (
+const EditButton = ({ text, onUpdate }) => (
 	<View style={styles.textWrap}>
-		<TextInput 
-			style={styles.input} 
-			value={text} 
-			onChangeText={onUpdate} 
-			autoFocus 
-			multiline 
-		/>
+		<TextInput style={styles.input} value={text} onChangeText={onUpdate} autoFocus multiline />
 	</View>
 );
 
-const DoneButton = ({onToggleEdit}) => (
+const DoneButton = ({ onToggleEdit }) => (
 	<TouchableOpacity style={styles.done} onPress={() => onToggleEdit(false)}>
-		<Text style={styles.doneText}>
-			Save
-		</Text>
+		<Text style={styles.doneText}>Save</Text>
 	</TouchableOpacity>
 );
 
-const Row = ( props ) => {
+const Row = (props) => {
 	return (
 		<View style={styles.container}>
 			<Switch value={props.complete} onValueChange={props.onComplete} />
-			{props.editing ? <EditButton text={props.text} onUpdate={props.onUpdate}/>: <ToDoItem onToggleEdit={props.onToggleEdit} text={props.text} complete={props.complete}/>}
-			{props.editing ? <DoneButton onToggleEdit={props.onToggleEdit}/> : <RemoveButton onRemove={props.onRemove}/> }
+			{props.editing ? (
+				<EditButton text={props.text} onUpdate={props.onUpdate} />
+			) : (
+				<Item onToggleEdit={props.onToggleEdit} text={props.text} complete={props.complete} />
+			)}
+			{props.editing ? (
+				<DoneButton onToggleEdit={props.onToggleEdit} />
+			) : (
+				<RemoveButton onRemove={props.onRemove} />
+			)}
 		</View>
 	);
 };
