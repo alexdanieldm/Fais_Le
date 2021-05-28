@@ -29,11 +29,13 @@ const Row = (props) => {
 	return (
 		<View style={styles.container}>
 			<Switch value={props.complete} onValueChange={props.onComplete} />
+
 			{props.editing ? (
 				<EditButton text={props.text} onUpdate={props.onUpdate} />
 			) : (
 				<Item onToggleEdit={props.onToggleEdit} text={props.text} complete={props.complete} />
 			)}
+
 			{props.editing ? (
 				<DoneButton onToggleEdit={props.onToggleEdit} />
 			) : (

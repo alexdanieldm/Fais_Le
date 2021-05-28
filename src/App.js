@@ -25,76 +25,63 @@ const filterItems = (filter, items) => {
 
 const App = () => {
 	const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+	const [ dataSource, setDataSource ] = useState(ds.cloneWithRows([]));
+	const [ filter, setFilter ] = useState('ALL');
+	const [ inputValue, setInputValue ] = useState('');
+	const [ loading, setLoading ] = useState(false);
+	const [ todoItems, setTodoItems ] = useState([]);
 
-	const _state = {
-		loading: false,
-		allComplete: false,
-		filter: 'ALL',
-		value: '',
-		items: [],
-		dataSource: ds.cloneWithRows([])
-	};
-
-	const [ state, setState ] = useState(_state);
+	useEffect(
+		() => {
+			AsyncStorage.setItem('items', JSON.stringify(dataSource));
+		},
+		[ dataSource ]
+	);
 
 	useEffect(() => {
+		setLoading(true);
 		AsyncStorage.getItem('items').then((json) => {
 			try {
-				const items = JSON.parse(json);
-				setSource(items, items, { loading: false });
+				setTodoItems(JSON.parse(json));
 			} catch (e) {
-				setState({
-					...state,
-					loading: false
-				});
-				console.log('loading: false');
+				console.error(e);
+			} finally {
+				setLoading(false);
 			}
 		});
 	}, []);
 
-	const handleUpdateText = (key, text) => {
-		const newItems = state.items.map((item) => {
-			if (item.key !== key) {
-				return item;
-			}
-			return {
-				...item,
-				text
-			};
-		});
+	const handleUpdateTodoItem = (key, text) => {
+		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+		const targetTodoItem = todoItems[targetTodoItemIndex];
+		const newTodoItem = { ...targetTodoItem, text };
 
-		setSource(newItems, filterItems(state.filter, newItems));
+		setTodoItems((currentTodoItems) => {
+			return [
+				...currentTodoItems.slice(0, targetTodoItemIndex),
+				newTodoItem,
+				...currentTodoItems.slice(targetTodoItemIndex + 1)
+			];
+		});
 	};
 
 	const handleToggleEditing = (key, editing) => {
-		const newItems = state.items.map((item) => {
-			if (item.key !== key) {
-				return item;
-			}
-			return {
-				...item,
-				editing
-			};
-		});
+		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+		const targetTodoItem = todoItems[targetTodoItemIndex];
+		const newTodoItem = { ...targetTodoItem, editing };
 
-		setSource(newItems, filterItems(state.filter, newItems));
+		setTodoItems((currentTodoItems) => {
+			return [
+				...currentTodoItems.slice(0, targetTodoItemIndex),
+				newTodoItem,
+				...currentTodoItems.slice(targetTodoItemIndex + 1)
+			];
+		});
 	};
 
-	const setSource = (items, itemsDatasource, otherState = {}) => {
-		setState({
-			...state,
-			items,
-			dataSource: state.dataSource.cloneWithRows(itemsDatasource),
-			...otherState
-		});
-
-		AsyncStorage.setItem('items', JSON.stringify(items));
-	};
-
-	const handleClearComplete = () => {
-		const newItems = filterItems('ACTIVE', state.items);
-
-		setSource(newItems, filterItems(state.filter, newItems));
+	const handleDeleteAllCompleted = () => {
+		const incompletedTodoItems = todoItems.filter(({ complete }) => complete === false);
+		setTodoItems(incompletedTodoItems);
 	};
 
 	const handleFilter = (filter) => {
@@ -107,8 +94,6 @@ const App = () => {
 		const newItems = state.items.filter((item) => {
 			return item.key !== key;
 		});
-
-		setSource(newItems, filterItems(state.filter, newItems));
 	};
 
 	const handleToggleComplete = (key, complete) => {
@@ -142,14 +127,13 @@ const App = () => {
 			return;
 		}
 
-		const newItems = [
-			...state.items,
-			{
-				key: Date.now(),
-				text: state.value,
-				complete: false
-			}
-		];
+		const newItems = state.items;
+
+		newItems.push({
+			key: Date.now(),
+			text: state.value,
+			complete: false
+		});
 
 		setSource(newItems, filterItems(state.filter, newItems), {
 			value: ''
@@ -162,7 +146,7 @@ const App = () => {
 				value={state.value}
 				onAddItem={handleAddItem}
 				onChange={(value) => setState({ ...state, value: value })}
-				onToggleAllComplete={handleToggleAllComplete}
+				onToggleAllComplete={handleDeleteAllCompleted}
 			/>
 
 			<View style={styles.content}>
