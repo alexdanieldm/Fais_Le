@@ -9,20 +9,6 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Row from './components/row';
 
-const filterItems = (filter, items) => {
-	return items.filter((item) => {
-		if (filter === 'ALL') {
-			return true;
-		}
-		if (filter === 'COMPLETED') {
-			return item.complete;
-		}
-		if (filter === 'ACTIVE') {
-			return !item.complete;
-		}
-	});
-};
-
 const App = () => {
 	const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 	const [ dataSource, setDataSource ] = useState(ds.cloneWithRows([]));
@@ -31,11 +17,32 @@ const App = () => {
 	const [ loading, setLoading ] = useState(false);
 	const [ todoItems, setTodoItems ] = useState([]);
 
+	const filterItems = (filter, items = []) => {
+		return items.filter((item) => {
+			if (filter === 'ALL') {
+				return true;
+			}
+			if (filter === 'COMPLETED') {
+				return item.complete;
+			}
+			if (filter === 'ACTIVE') {
+				return !item.complete;
+			}
+		});
+	};
+
 	useEffect(
 		() => {
 			AsyncStorage.setItem('items', JSON.stringify(dataSource));
 		},
 		[ dataSource ]
+	);
+
+	useEffect(
+		() => {
+			setDataSource(filterItems(filter, todoItems));
+		},
+		[ todoItems ]
 	);
 
 	useEffect(() => {
@@ -85,84 +92,89 @@ const App = () => {
 	};
 
 	const handleFilter = (filter) => {
-		setSource(state.items, filterItems(filter, state.items), {
-			filter
+		setFilter(filter);
+
+		const filteredItems = filterItems(filter, todoItems);
+		setDataSource(filteredItems);
+	};
+
+	const handleRemoveToDoItem = (key) => {
+		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+
+		setTodoItems((currentTodoItems) => {
+			return [
+				...currentTodoItems.slice(0, targetTodoItemIndex),
+				...currentTodoItems.slice(targetTodoItemIndex + 1)
+			];
 		});
 	};
 
-	const handleRemoveItem = (key) => {
-		const newItems = state.items.filter((item) => {
-			return item.key !== key;
+	const handleToggleCompleteItem = (key, complete) => {
+		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+		const targetTodoItem = todoItems[targetTodoItemIndex];
+		const newTodoItem = { ...targetTodoItem, complete };
+
+		setTodoItems((currentTodoItems) => {
+			return [
+				...currentTodoItems.slice(0, targetTodoItemIndex),
+				newTodoItem,
+				...currentTodoItems.slice(targetTodoItemIndex + 1)
+			];
 		});
 	};
 
-	const handleToggleComplete = (key, complete) => {
-		const newItems = state.items.map((item) => {
-			if (item.key !== key) {
-				return item;
-			}
-			return {
-				...item,
-				complete
-			};
-		});
+	const handleToggleCompleteAllItems = () => {
+		const itsAllComplete = todoItems.every((item) => item.complete == true);
 
-		setSource(newItems, filterItems(state.filter, newItems));
-	};
-
-	const handleToggleAllComplete = () => {
-		const complete = !state.allComplete;
-		const newItems = state.items.map((item) => ({
-			...item,
-			complete
-		}));
-
-		setSource(newItems, filterItems(state.filter, newItems), {
-			allComplete: complete
+		setTodoItems((currentTodoItems) => {
+			return currentTodoItems.map((item) => {
+				item.complete = !itsAllComplete;
+			});
 		});
 	};
 
 	const handleAddItem = () => {
-		if (!state.value) {
+		if (!inputValue) {
 			return;
 		}
 
-		const newItems = state.items;
-
-		newItems.push({
-			key: Date.now(),
-			text: state.value,
-			complete: false
+		setTodoItems((currentTodoItems) => {
+			return [
+				...currentTodoItems,
+				{
+					key: Date.now(),
+					text: inputValue,
+					complete: false
+				}
+			];
 		});
 
-		setSource(newItems, filterItems(state.filter, newItems), {
-			value: ''
-		});
+		setInputValue('');
 	};
 
 	return (
 		<View style={styles.container}>
 			<Header
-				value={state.value}
+				value={inputValue}
 				onAddItem={handleAddItem}
-				onChange={(value) => setState({ ...state, value: value })}
-				onToggleAllComplete={handleDeleteAllCompleted}
+				onChange={(value) => setInputValue(value)}
+				onToggleAllComplete={handleToggleCompleteAllItems}
 			/>
 
 			<View style={styles.content}>
 				<ListView
 					style={styles.list}
 					enableEmptySections
-					dataSource={state.dataSource}
+					dataSource={dataSource}
 					onScroll={() => Keyboard.dismiss()}
 					renderRow={({ key, ...value }) => {
 						return (
 							<Row
 								key={key}
-								onUpdate={(text) => handleUpdateText(key, text)}
+								onUpdate={(text) => handleUpdateTodoItem(key, text)}
 								onToggleEdit={(editing) => handleToggleEditing(key, editing)}
-								onRemove={() => handleRemoveItem(key)}
-								onComplete={(complete) => handleToggleComplete(key, complete)}
+								onRemove={() => handleRemoveToDoItem(key)}
+								onComplete={(complete) => handleToggleCompleteItem(key, complete)}
 								{...value}
 							/>
 						);
@@ -174,13 +186,13 @@ const App = () => {
 			</View>
 
 			<Footer
-				count={filterItems('ACTIVE', state.items).length}
+				count={filterItems('ACTIVE', todoItems).length}
 				onFilter={handleFilter}
-				filter={state.filter}
-				onClearComplete={handleClearComplete}
+				filter={filter}
+				onClearComplete={handleDeleteAllCompleted}
 			/>
 
-			{state.loading && (
+			{loading && (
 				<View style={styles.loading}>
 					<ActivityIndicator animating size="large" />
 				</View>
