@@ -9,6 +9,22 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Row from './components/row';
 
+const filterItems = (filter, items = []) => {
+	const filteredItems = items.filter((item) => {
+		if (filter === 'ALL') {
+			return true;
+		}
+		if (filter === 'COMPLETED') {
+			return item.complete;
+		}
+		if (filter === 'ACTIVE') {
+			return !item.complete;
+		}
+	});
+
+	return filteredItems;
+};
+
 const App = () => {
 	const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 	const [ dataSource, setDataSource ] = useState(ds.cloneWithRows([]));
@@ -17,19 +33,15 @@ const App = () => {
 	const [ loading, setLoading ] = useState(false);
 	const [ todoItems, setTodoItems ] = useState([]);
 
-	const filterItems = (filter, items = []) => {
-		return items.filter((item) => {
-			if (filter === 'ALL') {
-				return true;
-			}
-			if (filter === 'COMPLETED') {
-				return item.complete;
-			}
-			if (filter === 'ACTIVE') {
-				return !item.complete;
-			}
-		});
-	};
+	useEffect(
+		() => {
+			setDataSource(dataSource.cloneWithRows(filterItems(filter, todoItems)));
+
+			console.log('Debugging');
+			console.log(todoItems);
+		},
+		[ todoItems ]
+	);
 
 	useEffect(
 		() => {
@@ -38,18 +50,11 @@ const App = () => {
 		[ dataSource ]
 	);
 
-	useEffect(
-		() => {
-			setDataSource(filterItems(filter, todoItems));
-		},
-		[ todoItems ]
-	);
-
 	useEffect(() => {
 		setLoading(true);
 		AsyncStorage.getItem('items').then((json) => {
 			try {
-				setTodoItems(JSON.parse(json));
+				// setTodoItems(JSON.parse(json));
 			} catch (e) {
 				console.error(e);
 			} finally {
@@ -94,8 +99,7 @@ const App = () => {
 	const handleFilter = (filter) => {
 		setFilter(filter);
 
-		const filteredItems = filterItems(filter, todoItems);
-		setDataSource(filteredItems);
+		setDataSource(dataSource.cloneWithRows(filterItems(filter, todoItems)));
 	};
 
 	const handleRemoveToDoItem = (key) => {
@@ -124,16 +128,21 @@ const App = () => {
 	};
 
 	const handleToggleCompleteAllItems = () => {
-		const itsAllComplete = todoItems.every((item) => item.complete == true);
+		const itsAllComplete = todoItems.every((item) => item.complete === true);
 
 		setTodoItems((currentTodoItems) => {
-			return currentTodoItems.map((item) => {
+			const newTodoItem = [ ...todoItems ];
+
+			newTodoItem.map((item) => {
+				currentTodoItems;
 				item.complete = !itsAllComplete;
 			});
+
+			return newTodoItem;
 		});
 	};
 
-	const handleAddItem = () => {
+	const handleAddToDoItem = () => {
 		if (!inputValue) {
 			return;
 		}
@@ -156,7 +165,7 @@ const App = () => {
 		<View style={styles.container}>
 			<Header
 				value={inputValue}
-				onAddItem={handleAddItem}
+				onAddItem={handleAddToDoItem}
 				onChange={(value) => setInputValue(value)}
 				onToggleAllComplete={handleToggleCompleteAllItems}
 			/>
