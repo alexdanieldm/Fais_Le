@@ -3,8 +3,11 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 
 const Header = (props) => (
 	<View style={styles.header}>
+
 		<TouchableOpacity onPress={props.onToggleAllComplete}>
+
 			<Text style={styles.toggleIcon}>{String.fromCharCode(10003)}</Text>
+
 		</TouchableOpacity>
 
 		<TextInput
@@ -16,6 +19,7 @@ const Header = (props) => (
 			returnKeyType="done"
 			style={styles.input}
 		/>
+	
 	</View>
 );
 

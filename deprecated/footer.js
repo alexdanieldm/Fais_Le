@@ -1,56 +1,39 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
-const Footer = (props) => {
-  
-  const {filter} = props;
-
-  return (
+class Footer extends Component {
+  render() {
+    const {filter} = this.props;
+    return (
       <View style={styles.container}>
-
-        <Text>
-          {props.count} count
-        </Text>
-
+        <Text>{this.props.count} count</Text>
         <View style={styles.filters}>
-          
           <TouchableOpacity
             style={[styles.filter, filter === 'ALL' && styles.selected]}
-            onPress={() => props.onFilter('ALL')}
+            onPress={() => this.props.onFilter('ALL')}
           >
-
             <Text>All</Text>
-          
           </TouchableOpacity>
-          
           <TouchableOpacity
             style={[styles.filter, filter === 'ACTIVE' && styles.selected]}
-            onPress={() => props.onFilter('ACTIVE')}
+            onPress={() => this.props.onFilter('ACTIVE')}
           >
-
             <Text>Active</Text>
-
           </TouchableOpacity>
-          
           <TouchableOpacity
             style={[styles.filter, filter === 'COMPLETED' && styles.selected]}
-            onPress={() => props.onFilter('COMPLETED')}
+            onPress={() => this.props.onFilter('COMPLETED')}
           >
             <Text>Completed</Text>
-
           </TouchableOpacity>
-
         </View>
-        
-        <TouchableOpacity onPress={props.onClearComplete}>
-          
+        <TouchableOpacity onPress={this.props.onClearComplete}>
           <Text>Clear Completed</Text>
-        
         </TouchableOpacity>
       </View>
-  )
+    );
+  }
 }
-
 const styles = StyleSheet.create({
   container: {
     padding: 16,
@@ -71,5 +54,4 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(175, 47, 47, .2)',
   },
 });
-
 export default Footer;

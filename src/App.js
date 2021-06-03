@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, Platform, Keyboard } from 'react-native';
 
 // Libreries for deprecdeprecated React Native Components
@@ -9,8 +9,8 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Row from './components/row';
 
-const filterItems = (filter, items = []) => {
-	const filteredItems = items.filter((item) => {
+const filterItems = (filter, items) => {
+	return items.filter((item) => {
 		if (filter === 'ALL') {
 			return true;
 		}
@@ -21,169 +21,164 @@ const filterItems = (filter, items = []) => {
 			return !item.complete;
 		}
 	});
-
-	return filteredItems;
 };
 
 const App = () => {
+
 	const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-	const [ dataSource, setDataSource ] = useState(ds.cloneWithRows([]));
-	const [ filter, setFilter ] = useState('ALL');
-	const [ inputValue, setInputValue ] = useState('');
-	const [ loading, setLoading ] = useState(false);
-	const [ todoItems, setTodoItems ] = useState([]);
 
-	useEffect(
-		() => {
-			setDataSource(dataSource.cloneWithRows(filterItems(filter, todoItems)));
+	const initialState = {
+		loading: true,
+		allComplete: false,
+		filter: 'ALL',
+		value: '',
+		items: [],
+		dataSource: ds.cloneWithRows([])
+	}
+	
+	const [state, setState] = useState(initialState);
 
-			console.log('Debugging');
-			console.log(todoItems);
-		},
-		[ todoItems ]
-	);
-
-	useEffect(
-		() => {
-			AsyncStorage.setItem('items', JSON.stringify(dataSource));
-		},
-		[ dataSource ]
-	);
-
-	useEffect(() => {
-		setLoading(true);
+	useEffect( () => {
 		AsyncStorage.getItem('items').then((json) => {
 			try {
-				// setTodoItems(JSON.parse(json));
+				const items = JSON.parse(json);
+				setSource(items, items, { loading: false });
 			} catch (e) {
-				console.error(e);
-			} finally {
-				setLoading(false);
+				setState({
+					loading: false
+				});
 			}
-		});
-	}, []);
+		},[]);
+	})
 
-	const handleUpdateTodoItem = (key, text) => {
-		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
-		const targetTodoItem = todoItems[targetTodoItemIndex];
-		const newTodoItem = { ...targetTodoItem, text };
-
-		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems.slice(0, targetTodoItemIndex),
-				newTodoItem,
-				...currentTodoItems.slice(targetTodoItemIndex + 1)
-			];
+	const handleUpdateText = (key, text) => {
+		const newItems = state.items.map((item) => {
+			if (item.key !== key) {
+				return item;
+			}
+			return {
+				...item,
+				text
+			};
 		});
-	};
+
+		setSource(newItems, filterItems(state.filter, newItems));
+	}
 
 	const handleToggleEditing = (key, editing) => {
-		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
-		const targetTodoItem = todoItems[targetTodoItemIndex];
-		const newTodoItem = { ...targetTodoItem, editing };
-
-		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems.slice(0, targetTodoItemIndex),
-				newTodoItem,
-				...currentTodoItems.slice(targetTodoItemIndex + 1)
-			];
+		const newItems = state.items.map((item) => {
+			if (item.key !== key) {
+				return item;
+			}
+			return {
+				...item,
+				editing
+			};
 		});
-	};
 
-	const handleDeleteAllCompleted = () => {
-		const incompletedTodoItems = todoItems.filter(({ complete }) => complete === false);
-		setTodoItems(incompletedTodoItems);
-	};
+		setSource(newItems, filterItems(state.filter, newItems));
+	}
+
+	const setSource = (items, itemsDatasource, otherState = {}) => {
+		setState({
+			items,
+			dataSource: state.dataSource.cloneWithRows(itemsDatasource),
+			...otherState
+		});
+
+		AsyncStorage.setItem('items', JSON.stringify(items));
+	}
+
+	const handleClearComplete = () => {
+		const newItems = filterItems('ACTIVE', state.items);
+
+		setSource(newItems, filterItems(state.filter, newItems));
+	}
 
 	const handleFilter = (filter) => {
-		setFilter(filter);
-
-		setDataSource(dataSource.cloneWithRows(filterItems(filter, todoItems)));
-	};
-
-	const handleRemoveToDoItem = (key) => {
-		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
-
-		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems.slice(0, targetTodoItemIndex),
-				...currentTodoItems.slice(targetTodoItemIndex + 1)
-			];
+		setSource(state.items, filterItems(filter, state.items), {
+			filter
 		});
-	};
+	}
 
-	const handleToggleCompleteItem = (key, complete) => {
-		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
-		const targetTodoItem = todoItems[targetTodoItemIndex];
-		const newTodoItem = { ...targetTodoItem, complete };
-
-		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems.slice(0, targetTodoItemIndex),
-				newTodoItem,
-				...currentTodoItems.slice(targetTodoItemIndex + 1)
-			];
+	const handleRemoveItem = (key) => {
+		const newItems = state.items.filter((item) => {
+			return item.key !== key;
 		});
-	};
 
-	const handleToggleCompleteAllItems = () => {
-		const itsAllComplete = todoItems.every((item) => item.complete === true);
+		setSource(newItems, filterItems(state.filter, newItems));
+	}
 
-		setTodoItems((currentTodoItems) => {
-			const newTodoItem = [ ...todoItems ];
-
-			newTodoItem.map((item) => {
-				currentTodoItems;
-				item.complete = !itsAllComplete;
-			});
-
-			return newTodoItem;
+	const handleToggleComplete = (key, complete) => {
+		const newItems = state.items.map((item) => {
+			if (item.key !== key) {
+				return item;
+			}
+			return {
+				...item,
+				complete
+			};
 		});
-	};
 
-	const handleAddToDoItem = () => {
-		if (!inputValue) {
+		setSource(newItems, filterItems(state.filter, newItems));
+	}
+
+	const handleToggleAllComplete = () => {
+		const complete = !state.allComplete;
+		const newItems = state.items.map((item) => ({
+			...item,
+			complete
+		}));
+
+		setSource(newItems, filterItems(state.filter, newItems), {
+			allComplete: complete
+		});
+	}
+
+	const handleAddItem = () => {
+		if (!state.value) {
 			return;
 		}
 
-		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems,
-				{
-					key: Date.now(),
-					text: inputValue,
-					complete: false
-				}
-			];
+		const newItems = [
+			...state.items,
+			{
+				key: Date.now(),
+				text: state.value,
+				complete: false
+			}
+		];
+
+		setSource(newItems, filterItems(state.filter, newItems), {
+			value: ''
 		});
-
-		setInputValue('');
-	};
-
+	}
+	
 	return (
 		<View style={styles.container}>
+			
 			<Header
-				value={inputValue}
-				onAddItem={handleAddToDoItem}
-				onChange={(value) => setInputValue(value)}
-				onToggleAllComplete={handleToggleCompleteAllItems}
+				value={state.value}
+				onAddItem={handleAddItem}
+				onChange={(value) => setState({ value })}
+				onToggleAllComplete={handleToggleAllComplete}
 			/>
 
 			<View style={styles.content}>
+
 				<ListView
 					style={styles.list}
 					enableEmptySections
-					dataSource={dataSource}
+					dataSource={state.dataSource}
 					onScroll={() => Keyboard.dismiss()}
 					renderRow={({ key, ...value }) => {
 						return (
 							<Row
 								key={key}
-								onUpdate={(text) => handleUpdateTodoItem(key, text)}
+								onUpdate={(text) => handleUpdateText(key, text)}
 								onToggleEdit={(editing) => handleToggleEditing(key, editing)}
-								onRemove={() => handleRemoveToDoItem(key)}
-								onComplete={(complete) => handleToggleCompleteItem(key, complete)}
+								onRemove={() => handleRemoveItem(key)}
+								onComplete={(complete) => handleToggleComplete(key, complete)}
 								{...value}
 							/>
 						);
@@ -192,23 +187,25 @@ const App = () => {
 						return <View key={rowId} style={styles.separator} />;
 					}}
 				/>
+
 			</View>
 
 			<Footer
-				count={filterItems('ACTIVE', todoItems).length}
+				count={filterItems('ACTIVE', state.items).length}
 				onFilter={handleFilter}
-				filter={filter}
-				onClearComplete={handleDeleteAllCompleted}
+				filter={state.filter}
+				onClearComplete={handleClearComplete}
 			/>
 
-			{loading && (
+			{state.loading && (
 				<View style={styles.loading}>
 					<ActivityIndicator animating size="large" />
 				</View>
 			)}
+	
 		</View>
 	);
-};
+}
 
 const styles = StyleSheet.create({
 	container: {
