@@ -34,10 +34,11 @@ const App = () => {
 	const [ loading, setLoading ] = useState(false);
 	const [ todoItems, setTodoItems ] = useState([]);
 
+	//! FOR DEBUGGING
 	useEffect(
 		() => {
 			console.log('Debugging');
-			console.log(todoItems);
+			console.table(todoItems);
 		},
 		[ todoItems ]
 	);
@@ -182,17 +183,17 @@ const App = () => {
 				<FlatList
 					style={styles.list}
 					data={data}
-					extraData={todoItems}
+					extraData={data}
 					onScroll={() => Keyboard.dismiss()}
-					renderItem={({ key, item, index, separators }) => {
+					renderItem={({ item }) => {
 						return (
 							<Row
-								key={key}
-								onUpdate={(text) => handleUpdateTodoItem(key, text)}
-								onToggleEdit={(editing) => handleToggleEditing(key, editing)}
-								onRemove={() => handleRemoveToDoItem(key)}
-								onComplete={(complete) => handleToggleCompleteItem(key, complete)}
-								text={item.text}
+								key={item.key}
+								onUpdate={(text) => handleUpdateTodoItem(item.key, text)}
+								onToggleEdit={(editing) => handleToggleEditing(item.key, editing)}
+								onRemove={() => handleRemoveToDoItem(item.key)}
+								onComplete={(complete) => handleToggleCompleteItem(item.key, complete)}
+								{...item}
 							/>
 						);
 					}}
