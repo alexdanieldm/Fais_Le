@@ -1,26 +1,42 @@
 # To Do Application
-A To Do application build with React Native for mobile devices
 
-### Getting Started 
+A To Do application build with React Native for mobile devices, this its a *__REFACTOR__* of the app build on course [_"Build a React Native Todo Application"_](https://egghead.io/courses/build-a-react-native-todo-application) on __Egghead__
+
+### Main Changes
+
+The more important and significant changes made compare to the original app made on [this course](https://egghead.io/courses/build-a-react-native-todo-application), are the following:
+
+1. From _Class Components_ to __*Functional Components*__
+2. From _`ListView`_ component to __*`FlatList`*__ component
+3. From _`componentWillMount`_ to __*`useEffect()`*__ hook
+4. All function (or Hooks) are more __declarative__ *(trust me this is important)* and use __ECMAScript 2015__ best practices
+
+### Getting Started
+
 1. First, remember to install all the dependencies by ruuning:  
+
 ```bash
 npm install
 ```  
 
 2. Now you will need to start Metro, the JavaScript bundler that ships with React Native, please run:
-```bash
-npx react-native start
-```   
 
-2. Finally, let Metro run in its own terminal. Open a new terminal and run the following:
 ```bash
-npx react-native run-android
+npm run start
+```
+
+3. Finally, let Metro run in its own terminal. Open a new terminal and run the following:
+
+```bash
+npm run android
 ```  
 
 ### Caveats
-* _**IMPORTANT: This app uses "ListView" and "AsyncStorage", both are deprecated and no longer maintained by the Official React Native Team, thus all instances of "ListView" and "AsyncStorage" are imported from a community library**_  
+
+* _This app uses "AsyncStorage", thus all instances of it are imported from a community library_
 
   ```javascript
   import AsyncStorage from '@react-native-async-storage/async-storage';
-  import ListView from 'deprecated-react-native-listview';
   ```
+
+* _All test were made on Android Studio Emulator_
