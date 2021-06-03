@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, Platform, Keyboard } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Platform, Keyboard, FlatList } from 'react-native';
 
 // Libreries for deprecdeprecated React Native Components
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,7 +9,7 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Row from './components/row';
 
-const filterItems = (filter, items = []) => {
+const filterItems = (filter, items) => {
 	const filteredItems = items.filter((item) => {
 		if (filter === 'ALL') {
 			return true;
@@ -28,17 +28,25 @@ const filterItems = (filter, items = []) => {
 const App = () => {
 	const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 	const [ dataSource, setDataSource ] = useState(ds.cloneWithRows([]));
+	const [ data, setData ] = useState([]);
 	const [ filter, setFilter ] = useState('ALL');
 	const [ inputValue, setInputValue ] = useState('');
 	const [ loading, setLoading ] = useState(false);
 	const [ todoItems, setTodoItems ] = useState([]);
 
+	//! FOR DEBUGGING
+	useEffect(
+		() => {
+			console.log('Debugging');
+			console.table(todoItems);
+		},
+		[ todoItems ]
+	);
+
 	useEffect(
 		() => {
 			setDataSource(dataSource.cloneWithRows(filterItems(filter, todoItems)));
-
-			console.log('Debugging');
-			console.log(todoItems);
+			setData(filterItems(filter, todoItems));
 		},
 		[ todoItems ]
 	);
@@ -100,6 +108,7 @@ const App = () => {
 		setFilter(filter);
 
 		setDataSource(dataSource.cloneWithRows(filterItems(filter, todoItems)));
+		setData(filterItems(filter, todoItems));
 	};
 
 	const handleRemoveToDoItem = (key) => {
@@ -171,24 +180,24 @@ const App = () => {
 			/>
 
 			<View style={styles.content}>
-				<ListView
+				<FlatList
 					style={styles.list}
-					enableEmptySections
-					dataSource={dataSource}
+					data={data}
+					extraData={data}
 					onScroll={() => Keyboard.dismiss()}
-					renderRow={({ key, ...value }) => {
+					renderItem={({ item }) => {
 						return (
 							<Row
-								key={key}
-								onUpdate={(text) => handleUpdateTodoItem(key, text)}
-								onToggleEdit={(editing) => handleToggleEditing(key, editing)}
-								onRemove={() => handleRemoveToDoItem(key)}
-								onComplete={(complete) => handleToggleCompleteItem(key, complete)}
-								{...value}
+								key={item.key}
+								onUpdate={(text) => handleUpdateTodoItem(item.key, text)}
+								onToggleEdit={(editing) => handleToggleEditing(item.key, editing)}
+								onRemove={() => handleRemoveToDoItem(item.key)}
+								onComplete={(complete) => handleToggleCompleteItem(item.key, complete)}
+								{...item}
 							/>
 						);
 					}}
-					renderSeparator={(sectionId, rowId) => {
+					ItemSeparatorComponent={(rowId) => {
 						return <View key={rowId} style={styles.separator} />;
 					}}
 				/>
