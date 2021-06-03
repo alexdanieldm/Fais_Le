@@ -5,8 +5,8 @@ import { View, StyleSheet, ActivityIndicator, Platform, Keyboard, FlatList } fro
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListView from 'deprecated-react-native-listview';
 
-import Header from './components/header';
-import Footer from './components/footer';
+import TodoInput from './components/todoInput';
+import Filter from './components/filter';
 import Row from './components/row';
 
 const filterItems = (filter, items) => {
@@ -172,7 +172,7 @@ const App = () => {
 
 	return (
 		<View style={styles.container}>
-			<Header
+			<TodoInput
 				value={inputValue}
 				onAddItem={handleAddToDoItem}
 				onChange={(value) => setInputValue(value)}
@@ -203,7 +203,7 @@ const App = () => {
 				/>
 			</View>
 
-			<Footer
+			<Filter
 				count={filterItems('ACTIVE', todoItems).length}
 				onFilter={handleFilter}
 				filter={filter}
