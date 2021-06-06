@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, Platform, Keyboard, FlatList } from 'react-native';
 
-// Libreries for deprecdeprecated React Native Components
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ListView from 'deprecated-react-native-listview';
 
-import TodoInput from './components/todoInput';
-import Filter from './components/filter';
-import Row from './components/row';
+import TodoInput from '../components/todoInput';
+import Filter from '../components/filter';
+import Row from '../components/row';
 
 const filterItems = (filter, items) => {
 	const filteredItems = items.filter((item) => {
@@ -26,8 +24,6 @@ const filterItems = (filter, items) => {
 };
 
 const Todo = () => {
-	const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-	const [ dataSource, setDataSource ] = useState(ds.cloneWithRows([]));
 	const [ data, setData ] = useState([]);
 	const [ filter, setFilter ] = useState('ALL');
 	const [ inputValue, setInputValue ] = useState('');
@@ -45,7 +41,6 @@ const Todo = () => {
 
 	useEffect(
 		() => {
-			setDataSource(dataSource.cloneWithRows(filterItems(filter, todoItems)));
 			setData(filterItems(filter, todoItems));
 		},
 		[ todoItems ]
@@ -53,16 +48,17 @@ const Todo = () => {
 
 	useEffect(
 		() => {
-			AsyncStorage.setItem('items', JSON.stringify(dataSource));
+			// AsyncStorage.setItem('items', JSON.stringify(data));
 		},
-		[ dataSource ]
+		[ todoItems ]
 	);
 
 	useEffect(() => {
 		setLoading(true);
 		AsyncStorage.getItem('items').then((json) => {
 			try {
-				// setTodoItems(JSON.parse(json));
+				// const storageData = JSON.parse(json);
+				// setData(storageData);
 			} catch (e) {
 				console.error(e);
 			} finally {
@@ -107,7 +103,6 @@ const Todo = () => {
 	const handleFilter = (filter) => {
 		setFilter(filter);
 
-		setDataSource(dataSource.cloneWithRows(filterItems(filter, todoItems)));
 		setData(filterItems(filter, todoItems));
 	};
 
