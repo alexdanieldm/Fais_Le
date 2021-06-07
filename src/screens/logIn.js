@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 
-const logIn = () => {
+const logIn = ({ navigation }) => {
 	const [ user, setUser ] = useState('');
 	const [ password, setPassword ] = useState('');
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.banner}>務</Text>
-
 			<View style={styles.content}>
 				<Text style={styles.header}>Sign In to Continue</Text>
 
@@ -16,10 +14,9 @@ const logIn = () => {
 
 				<TextInput
 					style={styles.input}
-					value={user}
-					onChange={(value) => setUser(value)}
 					placeholder="example@mail.com"
-					returnKeyType="done"
+					onChangeText={(user) => setUser(user)}
+					defaultValue={user}
 					blurOnSubmit={false}
 				/>
 
@@ -27,26 +24,24 @@ const logIn = () => {
 
 				<TextInput
 					style={styles.input}
-					value={password}
-					onChange={(value) => setPassword(value)}
 					placeholder="Enter password"
+					onChangeText={(password) => setPassword(password)}
+					defaultValue={password}
 					blurOnSubmit={false}
-					returnKeyType="done"
 				/>
 
 				<Button
-					onPress={console.log(user)}
 					title="Log in"
+					onPress={() => navigation.navigate('Todo')}
 					color="#0096bd"
-					accessibilityLabel="Create a new Account"
+					accessibilityLabel="Access existing Account"
 				/>
 
 				<Text style={styles.separator}>or</Text>
 
 				<Button
-					style={styles}
-					onPress={console.log(user)}
 					title="Sign Up"
+					onPress={() => navigation.navigate('SignUp')}
 					color="#969696"
 					accessibilityLabel="Create a new Account"
 				/>
@@ -59,16 +54,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#F5F5F5'
-	},
-
-	banner: {
-		fontSize: 35,
-		backgroundColor: '#0096bd',
-		fontWeight: 'bold',
-		color: 'white',
-		padding: 10,
-		justifyContent: 'center',
-		alignItems: 'center'
 	},
 
 	header: {

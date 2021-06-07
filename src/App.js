@@ -1,28 +1,39 @@
+import 'react-native-gesture-handler';
+
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import Todo from './screens/todo';
 import LogIn from './screens/logIn';
 import SignUp from './screens/signUp';
 
+const Stack = createStackNavigator();
+
 const App = () => {
 	return (
-		<View style={styles.container}>
-			<Todo />
-			{/* <SignUp /> */}
-			{/* <LogIn /> */}
-		</View>
+		<NavigationContainer>
+			<Stack.Navigator
+				initialRouteName="Log In"
+				screenOptions={{
+					headerShown: true,
+					title: '務',
+					headerStyle: {
+						backgroundColor: '#0096bd'
+					},
+					headerTintColor: '#fff',
+					headerTitleStyle: {
+						fontWeight: 'bold',
+						fontSize: 36
+					}
+				}}
+			>
+				<Stack.Screen name="LogIn" component={LogIn} />
+				<Stack.Screen name="SignUp" component={SignUp} />
+				<Stack.Screen name="Todo" component={Todo} />
+			</Stack.Navigator>
+		</NavigationContainer>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#F5F5F5',
-		...Platform.select({
-			ios: { paddingTop: 30 }
-		})
-	}
-});
 
 export default App;

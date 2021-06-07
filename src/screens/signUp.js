@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 
-const logIn = () => {
+const logIn = ({ navigation }) => {
 	const [ user, setUser ] = useState('');
 	const [ password, setPassword ] = useState('');
 	const [ name, setName ] = useState('');
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.banner}>務</Text>
-
 			<View style={styles.content}>
 				<Text style={styles.header}>Create Account</Text>
 
@@ -17,10 +15,9 @@ const logIn = () => {
 
 				<TextInput
 					style={styles.input}
-					value={name}
-					onChange={(value) => setName(value)}
 					placeholder="Alex Duran"
-					returnKeyType="done"
+					onChange={(name) => setName(name)}
+					defaultValue={name}
 					blurOnSubmit={false}
 				/>
 
@@ -28,10 +25,9 @@ const logIn = () => {
 
 				<TextInput
 					style={styles.input}
-					value={user}
-					onChange={(value) => setUser(value)}
 					placeholder="example@mail.com"
-					returnKeyType="done"
+					onChangeText={(user) => setUser(user)}
+					defaultValue={user}
 					blurOnSubmit={false}
 				/>
 
@@ -39,16 +35,15 @@ const logIn = () => {
 
 				<TextInput
 					style={styles.input}
-					value={password}
-					onChange={(value) => setPassword(value)}
 					placeholder="Enter password"
+					onChangeText={(password) => setPassword(password)}
+					defaultValue={password}
 					blurOnSubmit={false}
-					returnKeyType="done"
 				/>
 
 				<Button
-					onPress={console.log(user)}
 					title="Sign Up"
+					onPress={() => navigation.navigate('LogIn')}
 					color="#0096bd"
 					accessibilityLabel="Create a new Account"
 				/>
@@ -56,11 +51,10 @@ const logIn = () => {
 				<Text style={styles.separator}>or</Text>
 
 				<Button
-					style={styles}
-					onPress={console.log(user)}
-					title="Log In"
+					title="Log in"
+					onPress={() => navigation.navigate('LogIn')}
 					color="#969696"
-					accessibilityLabel="Create a new Account"
+					accessibilityLabel="Access existing Account"
 				/>
 			</View>
 		</View>
@@ -71,16 +65,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#F5F5F5'
-	},
-
-	banner: {
-		fontSize: 35,
-		backgroundColor: '#0096bd',
-		fontWeight: 'bold',
-		color: 'white',
-		padding: 10,
-		justifyContent: 'center',
-		alignItems: 'center'
 	},
 
 	header: {
