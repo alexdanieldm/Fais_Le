@@ -28,7 +28,12 @@ const DoneButton = ({ onToggleEdit }) => (
 const Row = (props) => {
 	return (
 		<View style={styles.container}>
-			<Switch value={props.complete} onValueChange={props.onComplete} />
+			<Switch
+				thumbColor={props.complete ? '#f4f3f4' : '#f4f3f4'}
+				trackColor={{ true: '#45C8EB', false: '#bababa' }}
+				value={props.complete}
+				onValueChange={props.onComplete}
+			/>
 
 			{props.editing ? (
 				<EditButton text={props.text} onUpdate={props.onUpdate} />
