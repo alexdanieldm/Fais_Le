@@ -37,14 +37,12 @@ const logIn = ({ navigation }) => {
 					accessibilityLabel="Access existing Account"
 				/>
 
-				<Text style={styles.separator}>or</Text>
-
-				<Button
-					title="Sign Up"
-					onPress={() => navigation.navigate('SignUp')}
-					color="#969696"
-					accessibilityLabel="Create a new Account"
-				/>
+				<Text style={styles.signUp}>
+					Don't have an account?{' '}
+					<Text style={styles.signUpLink} onPress={() => navigation.navigate('SignUp')}>
+						Sign up
+					</Text>
+				</Text>
 			</View>
 		</View>
 	);
@@ -84,11 +82,15 @@ const styles = StyleSheet.create({
 		marginBottom: 20
 	},
 
-	separator: {
-		marginVertical: 10,
+	signUp: {
+		marginTop: 18,
 		fontSize: 13,
-		alignSelf: 'center',
-		fontStyle: 'italic'
+		alignSelf: 'center'
+	},
+
+	signUpLink: {
+		color: '#0096bd',
+		fontWeight: 'bold'
 	}
 });
 

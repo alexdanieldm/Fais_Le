@@ -42,20 +42,18 @@ const logIn = ({ navigation }) => {
 				/>
 
 				<Button
-					title="Sign Up"
+					title="Create account"
 					onPress={() => navigation.navigate('LogIn')}
 					color="#0096bd"
 					accessibilityLabel="Create a new Account"
 				/>
 
-				<Text style={styles.separator}>or</Text>
-
-				<Button
-					title="Log in"
-					onPress={() => navigation.navigate('LogIn')}
-					color="#969696"
-					accessibilityLabel="Access existing Account"
-				/>
+				<Text style={styles.signUp}>
+					Already have an account?{' '}
+					<Text style={styles.signUpLink} onPress={() => navigation.navigate('LogIn')}>
+						Log In
+					</Text>
+				</Text>
 			</View>
 		</View>
 	);
@@ -100,6 +98,17 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		alignSelf: 'center',
 		fontStyle: 'italic'
+	},
+
+	signUp: {
+		marginTop: 18,
+		fontSize: 13,
+		alignSelf: 'center'
+	},
+
+	signUpLink: {
+		color: '#0096bd',
+		fontWeight: 'bold'
 	}
 });
 
