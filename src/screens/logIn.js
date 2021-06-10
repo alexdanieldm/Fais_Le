@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 
+import Loading from '../components/loading';
+
 const logIn = ({ navigation }) => {
-	const [ user, setUser ] = useState('');
+	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
 
 	return (
@@ -15,9 +17,10 @@ const logIn = ({ navigation }) => {
 				<TextInput
 					style={styles.input}
 					placeholder="example@mail.com"
-					onChangeText={(user) => setUser(user)}
-					defaultValue={user}
+					onChangeText={(email) => setEmail(email)}
+					defaultValue={email}
 					blurOnSubmit={false}
+					keyboardType="email-address"
 				/>
 
 				<Text style={styles.label}>Password</Text>
@@ -28,6 +31,7 @@ const logIn = ({ navigation }) => {
 					onChangeText={(password) => setPassword(password)}
 					defaultValue={password}
 					blurOnSubmit={false}
+					secureTextEntry={true}
 				/>
 
 				<Button
@@ -38,12 +42,14 @@ const logIn = ({ navigation }) => {
 				/>
 
 				<Text style={styles.signUp}>
-					Don't have an account?{' '}
+					Don't have an account?
 					<Text style={styles.signUpLink} onPress={() => navigation.navigate('SignUp')}>
+						{' '}
 						Sign up
 					</Text>
 				</Text>
 			</View>
+			<Loading loading={loading} />
 		</View>
 	);
 };

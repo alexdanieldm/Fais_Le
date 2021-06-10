@@ -1,10 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, LogBox } from 'react-native';
+
+import { firebase } from '../firebase/config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import Loading from '../components/loading';
 
 const logIn = ({ navigation }) => {
-	const [ user, setUser ] = useState('');
+	const [ loading, setLoading ] = useState(false);
+
+	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
-	const [ name, setName ] = useState('');
+	const [ fullName, setFullName ] = useState('');
+
+	// ! DEBUG: START
+	// useEffect(
+	// 	() => {
+	// 		console.log('States Values');
+	// 		console.log(fullName);
+	// 		console.log(email);
+	// 		console.log(password);
+	// 	},
+	// 	[ email, fullName, password ]
+	// );
+	// ! DEBUG: END
+
+	const onSignUp = () => {
+		setLoading(true);
+		firebase
+			.auth()
+			.createUserWithEmailAndPassword(email, password)
+			.then((response) => {
+				const uid = response.user.uid;
+				const data = {
+					id: uid,
+					email,
+					fullName
+				};
+				console.log('USER REGISTERED');
+
+				const usersRef = firebase.firestore().collection('users');
+				usersRef
+					.doc(uid)
+					.set(data)
+					.then(() => {
+						console.log('DATA REGISTERED');
+						navigation.navigate('LogIn');
+						console.log('NAVIGATION FAIL');
+					})
+					.catch((error) => {
+						alert(error);
+						console.error(error);
+					});
+			})
+			.catch((error) => {
+				alert(error);
+				console.error(error);
+			})
+			.finally(() => {
+				setLoading(false);
+				console.log('Loading - FALSE');
+			});
+	};
 
 	return (
 		<View style={styles.container}>
@@ -16,9 +73,10 @@ const logIn = ({ navigation }) => {
 				<TextInput
 					style={styles.input}
 					placeholder="Alex Duran"
-					onChange={(name) => setName(name)}
-					defaultValue={name}
+					onChangeText={(fullName) => setFullName(fullName)}
+					defaultValue={fullName}
 					blurOnSubmit={false}
+					keyboardType="default"
 				/>
 
 				<Text style={styles.label}>Email</Text>
@@ -26,9 +84,10 @@ const logIn = ({ navigation }) => {
 				<TextInput
 					style={styles.input}
 					placeholder="example@mail.com"
-					onChangeText={(user) => setUser(user)}
-					defaultValue={user}
+					onChangeText={(email) => setEmail(email)}
+					defaultValue={email}
 					blurOnSubmit={false}
+					keyboardType="email-address"
 				/>
 
 				<Text style={styles.label}>Password</Text>
@@ -38,23 +97,25 @@ const logIn = ({ navigation }) => {
 					placeholder="Enter password"
 					onChangeText={(password) => setPassword(password)}
 					defaultValue={password}
-					blurOnSubmit={false}
+					secureTextEntry={true}
 				/>
 
 				<Button
 					title="Create account"
-					onPress={() => navigation.navigate('LogIn')}
+					onPress={onSignUp}
 					color="#0096bd"
 					accessibilityLabel="Create a new Account"
 				/>
 
 				<Text style={styles.signUp}>
-					Already have an account?{' '}
+					Already have an account?
 					<Text style={styles.signUpLink} onPress={() => navigation.navigate('LogIn')}>
+						{' '}
 						Log In
 					</Text>
 				</Text>
 			</View>
+			<Loading loading={loading} />
 		</View>
 	);
 };
