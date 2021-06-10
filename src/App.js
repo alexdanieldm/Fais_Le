@@ -14,7 +14,7 @@ const App = () => {
 	return (
 		<NavigationContainer>
 			<Stack.Navigator
-				initialRouteName="Log In"
+				initialRouteName="Todo"
 				screenOptions={{
 					headerShown: true,
 					title: '務',
