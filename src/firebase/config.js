@@ -1,11 +1,11 @@
-import * as firebase from 'firebase';
+import firebase from 'firebase';
 import '@firebase/auth';
 import '@firebase/firestore';
 
 const firebaseConfig = {
 	apiKey: 'AIzaSyDwUOr35BcrbOFA5197umplyZEVOq359rw',
 	authDomain: 'todo-rn-4699d.firebaseapp.com',
-	// databaseURL: 'https://your-database-name.firebaseio.com',
+	databaseURL: 'https://todo-rn-4699d.firebaseio.com',
 	projectId: 'todo-rn-4699d',
 	storageBucket: 'todo-rn-4699d.appspot.com',
 	messagingSenderId: '819123880621',
