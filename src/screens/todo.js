@@ -8,26 +8,24 @@ import Filter from '../components/filter';
 import Row from '../components/row';
 import Loading from '../components/loading';
 
-const filterItems = (filter, items) => {
-	return new Promise((resolve, reject) => {
-		try {
-			const filteredItems = items.filter((item) => {
-				if (filter === 'ALL') {
-					return true;
-				}
-				if (filter === 'COMPLETED') {
-					return item.complete;
-				}
-				if (filter === 'ACTIVE') {
-					return !item.complete;
-				}
-			});
-			resolve(filteredItems);
-		} catch (error) {
-			console.error(error);
-			reject(error);
-		}
-	});
+const itemsFilter = (filter, items) => {
+	try {
+		const itemsAfterFilter = items.filter((item) => {
+			if (filter === 'ALL') {
+				return true;
+			}
+			if (filter === 'COMPLETED') {
+				return item.complete;
+			}
+			if (filter === 'ACTIVE') {
+				return !item.complete;
+			}
+		});
+		return itemsAfterFilter;
+	} catch (e) {
+		alert(e);
+		console.error(e);
+	}
 };
 
 const Todo = () => {
@@ -35,29 +33,7 @@ const Todo = () => {
 	const [ inputValue, setInputValue ] = useState('');
 	const [ filter, setFilter ] = useState('ALL');
 	const [ todoItems, setTodoItems ] = useState([]);
-	const [ data, setData ] = useState([]);
-
-	useEffect(
-		async () => {
-			// ! DEBUG: START
-			console.log('\nITEMS - ' + todoItems.length);
-			console.table(todoItems);
-			// ! DEBUG: END
-
-			filterItems(filter, todoItems).then((res) => {
-				console.log(res);
-				setData(res);
-			});
-
-			// ! DEBUG: START
-			console.log('\nDATA - ' + data.length);
-			console.table(data);
-			// ! DEBUG: END
-
-			AsyncStorage.setItem('items', JSON.stringify(todoItems));
-		},
-		[ todoItems ]
-	);
+	const [ filterItems, setFilterItems ] = useState([]);
 
 	useEffect(() => {
 		setLoading(true);
@@ -65,8 +41,8 @@ const Todo = () => {
 			try {
 				// TODO : Move from AsyncStorage to Firebase DB
 
-				setTodoItems(JSON.parse(json));
-				setData(filterItems(filter, todoItems));
+				const parseJSON = JSON.parse(json);
+				setTodoItems(parseJSON);
 			} catch (e) {
 				console.error(e);
 			} finally {
@@ -74,6 +50,16 @@ const Todo = () => {
 			}
 		});
 	}, []);
+
+	useEffect(
+		async () => {
+			const updatedItems = await itemsFilter(filter, todoItems);
+			setFilterItems(updatedItems);
+
+			AsyncStorage.setItem('items', JSON.stringify(todoItems));
+		},
+		[ todoItems ]
+	);
 
 	const handleAddToDoItem = () => {
 		if (!inputValue) {
@@ -107,7 +93,7 @@ const Todo = () => {
 
 			return newTodoItem;
 		});
-		setData(filterItems(filter, todoItems));
+		setFilterItems(itemsFilter(filter, todoItems));
 	};
 
 	const handleToggleCompleteItem = (key, complete) => {
@@ -166,7 +152,7 @@ const Todo = () => {
 	const handleFilter = (filter) => {
 		setFilter(filter);
 
-		setData(filterItems(filter, todoItems));
+		setFilterItems(itemsFilter(filter, todoItems));
 	};
 
 	const handleDeleteAllCompleted = () => {
@@ -186,7 +172,7 @@ const Todo = () => {
 			<View style={styles.content}>
 				<FlatList
 					style={styles.list}
-					data={data}
+					data={filterItems}
 					extraData={todoItems}
 					onScroll={() => Keyboard.dismiss()}
 					renderItem={({ item }) => {
@@ -208,7 +194,7 @@ const Todo = () => {
 			</View>
 
 			<Filter
-				count={filterItems('ACTIVE', todoItems).length}
+				count={itemsFilter('ACTIVE', todoItems).length}
 				onFilter={handleFilter}
 				filter={filter}
 				onClearComplete={handleDeleteAllCompleted}
