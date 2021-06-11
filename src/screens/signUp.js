@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, Button, LogBox } from 'react-native';
-
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 import { firebase } from '../firebase/config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Loading from '../components/loading';
 
@@ -13,24 +11,14 @@ const logIn = ({ navigation }) => {
 	const [ password, setPassword ] = useState('');
 	const [ fullName, setFullName ] = useState('');
 
-	// ! DEBUG: START
-	// useEffect(
-	// 	() => {
-	// 		console.log('States Values');
-	// 		console.log(fullName);
-	// 		console.log(email);
-	// 		console.log(password);
-	// 	},
-	// 	[ email, fullName, password ]
-	// );
-	// ! DEBUG: END
-
 	const onSignUp = () => {
+		console.log('SIGN UP - START');
 		setLoading(true);
 		firebase
 			.auth()
 			.createUserWithEmailAndPassword(email, password)
 			.then((response) => {
+				console.log('THEN - START');
 				const uid = response.user.uid;
 				const data = {
 					id: uid,
@@ -40,26 +28,23 @@ const logIn = ({ navigation }) => {
 				console.log('USER REGISTERED');
 
 				const usersRef = firebase.firestore().collection('users');
-				usersRef
-					.doc(uid)
-					.set(data)
-					.then(() => {
-						console.log('DATA REGISTERED');
-						navigation.navigate('LogIn');
-						console.log('NAVIGATION FAIL');
-					})
-					.catch((error) => {
-						alert(error);
-						console.error(error);
-					});
+				usersRef.doc(uid).set(data).catch((error) => {
+					alert(error);
+					console.error(error);
+				});
+				console.log('THEN - END');
 			})
 			.catch((error) => {
 				alert(error);
 				console.error(error);
 			})
 			.finally(() => {
+				setFullName('');
+				setEmail('');
+				setPassword('');
+				console.log('SIGN UP - END');
 				setLoading(false);
-				console.log('Loading - FALSE');
+				navigation.navigate('LogIn');
 			});
 	};
 
@@ -152,13 +137,6 @@ const styles = StyleSheet.create({
 		paddingVertical: 5,
 		paddingHorizontal: 12,
 		marginBottom: 20
-	},
-
-	separator: {
-		marginVertical: 10,
-		fontSize: 13,
-		alignSelf: 'center',
-		fontStyle: 'italic'
 	},
 
 	signUp: {
