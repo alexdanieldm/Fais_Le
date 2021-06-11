@@ -18,33 +18,29 @@ const logIn = ({ navigation }) => {
 			.auth()
 			.createUserWithEmailAndPassword(email, password)
 			.then((response) => {
-				console.log('THEN - START');
 				const uid = response.user.uid;
 				const data = {
 					id: uid,
 					email,
 					fullName
 				};
-				console.log('USER REGISTERED');
 
 				const usersRef = firebase.firestore().collection('users');
 				usersRef.doc(uid).set(data).catch((error) => {
 					alert(error);
 					console.error(error);
 				});
-				console.log('THEN - END');
+				navigation.navigate('LogIn');
 			})
 			.catch((error) => {
-				alert(error);
+				alert(error.message);
 				console.error(error);
 			})
 			.finally(() => {
 				setFullName('');
 				setEmail('');
 				setPassword('');
-				console.log('SIGN UP - END');
 				setLoading(false);
-				navigation.navigate('LogIn');
 			});
 	};
 

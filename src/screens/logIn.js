@@ -1,11 +1,48 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import { firebase } from '../firebase/config';
 
 import Loading from '../components/loading';
 
 const logIn = ({ navigation }) => {
+	const [ loading, setLoading ] = useState(false);
+
 	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
+
+	const onLogIn = () => {
+		setLoading(true);
+		firebase
+			.auth()
+			.signInWithEmailAndPassword(email, password)
+			.then((res) => {
+				const uid = res.user.uid;
+				const usersRef = firebase.firestore().collection('users');
+				usersRef
+					.doc(uid)
+					.get()
+					.then((firestoreDocument) => {
+						if (!firestoreDocument.exists) {
+							alert('User does not exist anymore.');
+							return;
+						}
+						const userData = firestoreDocument.data();
+					})
+					.catch((error) => {
+						alert(error);
+					});
+				navigation.navigate('Todo');
+			})
+			.catch((error) => {
+				alert(error.message);
+				console.error(error);
+			})
+			.finally(() => {
+				setEmail('');
+				setPassword('');
+				setLoading(false);
+			});
+	};
 
 	return (
 		<View style={styles.container}>
@@ -34,12 +71,7 @@ const logIn = ({ navigation }) => {
 					secureTextEntry={true}
 				/>
 
-				<Button
-					title="Log in"
-					onPress={() => navigation.navigate('Todo')}
-					color="#0096bd"
-					accessibilityLabel="Access existing Account"
-				/>
+				<Button title="Log In" onPress={onLogIn} color="#0096bd" accessibilityLabel="Access existing Account" />
 
 				<Text style={styles.signUp}>
 					Don't have an account?
