@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+
 import { firebase } from '../firebase/config';
 
 import Loading from '../components/loading';
@@ -15,8 +16,8 @@ const logIn = ({ navigation }) => {
 		firebase
 			.auth()
 			.signInWithEmailAndPassword(email, password)
-			.then((res) => {
-				const uid = res.user.uid;
+			.then((userCredential) => {
+				const uid = userCredential.user.uid;
 				const usersRef = firebase.firestore().collection('users');
 				usersRef
 					.doc(uid)
@@ -29,7 +30,8 @@ const logIn = ({ navigation }) => {
 						const userData = firestoreDocument.data();
 					})
 					.catch((error) => {
-						alert(error);
+						alert(error.message);
+						console.error(error);
 					});
 				navigation.navigate('Todo');
 			})

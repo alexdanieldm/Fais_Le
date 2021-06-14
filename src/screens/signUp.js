@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+
 import { firebase } from '../firebase/config';
 
 import Loading from '../components/loading';
@@ -17,8 +18,8 @@ const logIn = ({ navigation }) => {
 		firebase
 			.auth()
 			.createUserWithEmailAndPassword(email, password)
-			.then((response) => {
-				const uid = response.user.uid;
+			.then((userCredential) => {
+				const uid = userCredential.user.uid;
 				const data = {
 					id: uid,
 					email,
