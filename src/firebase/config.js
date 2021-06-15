@@ -2,15 +2,26 @@ import firebase from 'firebase';
 import '@firebase/auth';
 import '@firebase/firestore';
 
+import {
+	API_KEY,
+	AUTH_DOMAIN,
+	DATABASE_URL,
+	PROJECT_ID,
+	STORAGE_BUCKET,
+	MESSAGING_SENDER_ID,
+	APP_ID,
+	MEASUREMENT_ID
+} from '@env';
+
 const firebaseConfig = {
-	apiKey: 'AIzaSyDwUOr35BcrbOFA5197umplyZEVOq359rw',
-	authDomain: 'todo-rn-4699d.firebaseapp.com',
-	databaseURL: 'https://todo-rn-4699d-default-rtdb.firebaseio.com/',
-	projectId: 'todo-rn-4699d',
-	storageBucket: 'gs://todo-rn-4699d.appspot.com',
-	messagingSenderId: '819123880621',
-	appId: '1:819123880621:web:a3ea0818726e16db6dfc24',
-	measurementId: 'G-QP6Y9WHBKX'
+	apiKey: API_KEY,
+	authDomain: AUTH_DOMAIN,
+	databaseURL: DATABASE_URL,
+	projectId: PROJECT_ID,
+	storageBucket: STORAGE_BUCKET,
+	messagingSenderId: MESSAGING_SENDER_ID,
+	appId: APP_ID,
+	measurementId: MEASUREMENT_ID
 };
 
 if (!firebase.apps.length) {
