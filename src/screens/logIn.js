@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, Keyboard } from 'react-native';
 
 import { firebase } from '../firebase/config';
 
@@ -12,27 +12,31 @@ const logIn = ({ navigation }) => {
 	const [ password, setPassword ] = useState('');
 
 	const onLogIn = () => {
+		Keyboard.dismiss();
 		setLoading(true);
+
 		firebase
 			.auth()
 			.signInWithEmailAndPassword(email, password)
 			.then((userCredential) => {
-				const uid = userCredential.user.uid;
-				const usersRef = firebase.firestore().collection('users');
-				usersRef
-					.doc(uid)
+				var user = userCredential.user;
+
+				const usersCollection = firebase.firestore().collection('users');
+
+				usersCollection
+					.doc(user.uid)
 					.get()
 					.then((firestoreDocument) => {
 						if (!firestoreDocument.exists) {
-							alert('User does not exist anymore.');
+							alert('User does not exist. Please try agin');
 							return;
 						}
-						const userData = firestoreDocument.data();
 					})
 					.catch((error) => {
 						alert(error.message);
 						console.error(error);
 					});
+
 				navigation.navigate('Todo');
 			})
 			.catch((error) => {

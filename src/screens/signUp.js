@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, Keyboard } from 'react-native';
 
 import { firebase } from '../firebase/config';
 
@@ -13,24 +13,26 @@ const logIn = ({ navigation }) => {
 	const [ fullName, setFullName ] = useState('');
 
 	const onSignUp = () => {
-		console.log('SIGN UP - START');
+		Keyboard.dismiss();
 		setLoading(true);
+
 		firebase
 			.auth()
 			.createUserWithEmailAndPassword(email, password)
 			.then((userCredential) => {
-				const uid = userCredential.user.uid;
-				const data = {
-					id: uid,
+				var user = userCredential.user;
+				const newUser = {
+					id: user.uid,
 					email,
 					fullName
 				};
 
-				const usersRef = firebase.firestore().collection('users');
-				usersRef.doc(uid).set(data).catch((error) => {
-					alert(error);
+				const usersCollection = firebase.firestore().collection('users');
+				usersCollection.doc(user.uid).set(newUser).catch((error) => {
+					alert(error.message);
 					console.error(error);
 				});
+
 				navigation.navigate('LogIn');
 			})
 			.catch((error) => {
