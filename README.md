@@ -19,13 +19,22 @@ The more important and significant changes made compare to the original app made
 npm install
 ```  
 
-2. Now you will need to start Metro, the JavaScript bundler that ships with React Native, please run:
+2. Now you will need to start Metro, the JavaScript bundler that ships with React Native, let Metro run in its own terminal, please run:
 
 ```bash
 npm run start
 ```
 
-3. Finally, let Metro run in its own terminal. Open a new terminal and run the following:
+3. To have all environment variables set follow two steps:
+
+* Create a .env file base on the template provide:
+```sh
+cp env.template .env
+```
+
+* There replace all values with your firebase configuration. You can get all this information from [Firebase Console](https://console.firebase.google.com/) -> Project Settings
+
+4. Finally, while running Metro, open a new terminal and run the following:
 
 ```bash
 npm run android
@@ -38,5 +47,3 @@ npm run android
   ```javascript
   import AsyncStorage from '@react-native-async-storage/async-storage';
   ```
-
-* _All test were made on Android Studio Emulator_
