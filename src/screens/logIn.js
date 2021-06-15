@@ -33,11 +33,8 @@ const logIn = ({ navigation }) => {
 						}
 					})
 					.catch((error) => {
-						alert(error.message);
-						console.error(error);
+						// alert(error.message);
 					});
-
-				navigation.navigate('Todo');
 			})
 			.catch((error) => {
 				alert(error.message);

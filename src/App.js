@@ -1,6 +1,7 @@
 import 'react-native-gesture-handler';
 
 import React, { useState, useEffect } from 'react';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -9,7 +10,9 @@ import { firebase } from './firebase/config';
 import Todo from './screens/todo';
 import LogIn from './screens/logIn';
 import SignUp from './screens/signUp';
+
 import Loading from './components/loading';
+import LogOutButton from './components/logOutButton'
 
 const Stack = createStackNavigator();
 
@@ -29,6 +32,13 @@ const App = () => {
 		})
 		// const usersCollection = firebase.firestore().collection('users');
 	}, []);
+
+	const onSignOut = () => {
+		firebase.auth().signOut().catch((error) => {
+			alert(error.message);
+			console.error(error);
+		})
+	}
 
 	if (loading) {
 		return <Loading loading={loading} />
@@ -50,11 +60,14 @@ const App = () => {
 					}
 				}}
 			>				
-				{isLoggedIn ? (
-					<>
-						<Stack.Screen name="Todo" component={Todo} />
-					</>
-
+				{isLoggedIn ? (					
+					<Stack.Screen name="Todo" component={Todo} 
+						options={{
+							headerRight: () => (
+								<LogOutButton onPress={onSignOut} />
+							),
+						}}
+					/>					
         		) : (
 					<>
 						<Stack.Screen name="LogIn" component={LogIn} />
@@ -66,5 +79,6 @@ const App = () => {
 	);
 
 };
+
 
 export default App;
