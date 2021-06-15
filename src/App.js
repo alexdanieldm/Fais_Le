@@ -14,30 +14,29 @@ import Loading from './components/loading';
 const Stack = createStackNavigator();
 
 const App = () => {
-	const [ loading, setLoading ] = useState(false);
-	const [ loggedIn, setLoggedIn ] = useState(false);
+	const [ isLoggedIn, setIsLoggedIn ] = useState(false);
+	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
-		setLoading(true);
-		console.log('mounted');
-		const usersRef = firebase.firestore().collection('users');
-		firebase.auth().onAuthStateChanged(async (user) => {
+		firebase.auth().onAuthStateChanged((user) => {
 			if (user) {
-				setLoggedIn(true);
-				console.log('SIGN IN: ' + loggedIn);
+				setIsLoggedIn(true);
 			}
 			else {
-				setLoggedIn('LogIn');
-				console.log('SIGN OUT: ' + loggedIn);
-				setLoading(false);
+				setIsLoggedIn(false);
 			}
-		});
+			setLoading(false)
+		})
+		// const usersCollection = firebase.firestore().collection('users');
 	}, []);
+
+	if (loading) {
+		return <Loading loading={loading} />
+	}
 
 	return (
 		<NavigationContainer>
 			<Stack.Navigator
-				initialRouteName={loggedIn ? 'Todo' : 'LogIn'}
 				screenOptions={{
 					headerShown: true,
 					title: '務',
@@ -50,13 +49,22 @@ const App = () => {
 						fontSize: 36
 					}
 				}}
-			>
-				<Stack.Screen name="Todo" component={Todo} />
-				<Stack.Screen name="LogIn" component={LogIn} />
-				<Stack.Screen name="SignUp" component={SignUp} />
+			>				
+				{isLoggedIn ? (
+					<>
+						<Stack.Screen name="Todo" component={Todo} />
+					</>
+
+        		) : (
+					<>
+						<Stack.Screen name="LogIn" component={LogIn} />
+						<Stack.Screen name="SignUp" component={SignUp} />
+					</>
+				)}
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
+
 };
 
 export default App;

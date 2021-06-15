@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
-const Loading = ({ loading = false }) => {
+const Loading = ({ loading }) => {
 	if (loading) {
 		return (
 			<View style={styles.loading}>
