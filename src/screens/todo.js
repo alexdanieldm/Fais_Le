@@ -6,59 +6,43 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TodoInput from '../components/todoInput';
 import Filter from '../components/filter';
 import Row from '../components/row';
+import Loading from '../components/loading';
 
-const filterItems = (filter, items) => {
-	const filteredItems = items.filter((item) => {
-		if (filter === 'ALL') {
-			return true;
-		}
-		if (filter === 'COMPLETED') {
-			return item.complete;
-		}
-		if (filter === 'ACTIVE') {
-			return !item.complete;
-		}
-	});
-
-	return filteredItems;
+const itemsFilter = (filter, items) => {
+	try {
+		const itemsAfterFilter = items.filter((item) => {
+			if (filter === 'ALL') {
+				return true;
+			}
+			if (filter === 'COMPLETED') {
+				return item.complete;
+			}
+			if (filter === 'ACTIVE') {
+				return !item.complete;
+			}
+		});
+		return itemsAfterFilter;
+	} catch (e) {
+		alert(e);
+		console.error(e);
+	}
 };
 
 const Todo = () => {
-	const [ data, setData ] = useState([]);
-	const [ filter, setFilter ] = useState('ALL');
-	const [ inputValue, setInputValue ] = useState('');
 	const [ loading, setLoading ] = useState(false);
+	const [ inputValue, setInputValue ] = useState('');
+	const [ filter, setFilter ] = useState('ALL');
 	const [ todoItems, setTodoItems ] = useState([]);
-
-	//! FOR DEBUGGING
-	useEffect(
-		() => {
-			console.log('Debugging');
-			console.table(todoItems);
-		},
-		[ todoItems ]
-	);
-
-	useEffect(
-		() => {
-			setData(filterItems(filter, todoItems));
-		},
-		[ todoItems ]
-	);
-
-	useEffect(
-		() => {
-			// AsyncStorage.setItem('items', JSON.stringify(data));
-		},
-		[ todoItems ]
-	);
+	const [ filterItems, setFilterItems ] = useState([]);
 
 	useEffect(() => {
 		setLoading(true);
 		AsyncStorage.getItem('items').then((json) => {
 			try {
-				// const storageData = JSON.parse(json);
-				// setData(storageData);
+				// TODO : Move from AsyncStorage to Firebase DB
+
+				const parseJSON = JSON.parse(json);
+				setTodoItems(parseJSON);
 			} catch (e) {
 				console.error(e);
 			} finally {
@@ -67,84 +51,15 @@ const Todo = () => {
 		});
 	}, []);
 
-	const handleUpdateTodoItem = (key, text) => {
-		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
-		const targetTodoItem = todoItems[targetTodoItemIndex];
-		const newTodoItem = { ...targetTodoItem, text };
+	useEffect(
+		async () => {
+			const updatedItems = await itemsFilter(filter, todoItems);
+			setFilterItems(updatedItems);
 
-		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems.slice(0, targetTodoItemIndex),
-				newTodoItem,
-				...currentTodoItems.slice(targetTodoItemIndex + 1)
-			];
-		});
-	};
-
-	const handleToggleEditing = (key, editing) => {
-		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
-		const targetTodoItem = todoItems[targetTodoItemIndex];
-		const newTodoItem = { ...targetTodoItem, editing };
-
-		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems.slice(0, targetTodoItemIndex),
-				newTodoItem,
-				...currentTodoItems.slice(targetTodoItemIndex + 1)
-			];
-		});
-	};
-
-	const handleDeleteAllCompleted = () => {
-		const incompletedTodoItems = todoItems.filter(({ complete }) => complete === false);
-		setTodoItems(incompletedTodoItems);
-	};
-
-	const handleFilter = (filter) => {
-		setFilter(filter);
-
-		setData(filterItems(filter, todoItems));
-	};
-
-	const handleRemoveToDoItem = (key) => {
-		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
-
-		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems.slice(0, targetTodoItemIndex),
-				...currentTodoItems.slice(targetTodoItemIndex + 1)
-			];
-		});
-	};
-
-	const handleToggleCompleteItem = (key, complete) => {
-		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
-		const targetTodoItem = todoItems[targetTodoItemIndex];
-		const newTodoItem = { ...targetTodoItem, complete };
-
-		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems.slice(0, targetTodoItemIndex),
-				newTodoItem,
-				...currentTodoItems.slice(targetTodoItemIndex + 1)
-			];
-		});
-	};
-
-	const handleToggleCompleteAllItems = () => {
-		const itsAllComplete = todoItems.every((item) => item.complete === true);
-
-		setTodoItems((currentTodoItems) => {
-			const newTodoItem = [ ...todoItems ];
-
-			newTodoItem.map((item) => {
-				currentTodoItems;
-				item.complete = !itsAllComplete;
-			});
-
-			return newTodoItem;
-		});
-	};
+			AsyncStorage.setItem('items', JSON.stringify(todoItems));
+		},
+		[ todoItems ]
+	);
 
 	const handleAddToDoItem = () => {
 		if (!inputValue) {
@@ -165,6 +80,86 @@ const Todo = () => {
 		setInputValue('');
 	};
 
+	const handleToggleCompleteAllItems = () => {
+		const itsAllComplete = todoItems.every((item) => item.complete === true);
+
+		setTodoItems((currentTodoItems) => {
+			const newTodoItem = [ ...todoItems ];
+
+			newTodoItem.map((item) => {
+				currentTodoItems;
+				item.complete = !itsAllComplete;
+			});
+
+			return newTodoItem;
+		});
+		setFilterItems(itemsFilter(filter, todoItems));
+	};
+
+	const handleToggleCompleteItem = (key, complete) => {
+		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+		const targetTodoItem = todoItems[targetTodoItemIndex];
+		const newTodoItem = { ...targetTodoItem, complete };
+
+		setTodoItems((currentTodoItems) => {
+			return [
+				...currentTodoItems.slice(0, targetTodoItemIndex),
+				newTodoItem,
+				...currentTodoItems.slice(targetTodoItemIndex + 1)
+			];
+		});
+	};
+
+	const handleRemoveToDoItem = (key) => {
+		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+
+		setTodoItems((currentTodoItems) => {
+			return [
+				...currentTodoItems.slice(0, targetTodoItemIndex),
+				...currentTodoItems.slice(targetTodoItemIndex + 1)
+			];
+		});
+	};
+
+	const handleToggleEditing = (key, editing) => {
+		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+		const targetTodoItem = todoItems[targetTodoItemIndex];
+		const newTodoItem = { ...targetTodoItem, editing };
+
+		setTodoItems((currentTodoItems) => {
+			return [
+				...currentTodoItems.slice(0, targetTodoItemIndex),
+				newTodoItem,
+				...currentTodoItems.slice(targetTodoItemIndex + 1)
+			];
+		});
+	};
+
+	const handleUpdateTodoItem = (key, text) => {
+		const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+		const targetTodoItem = todoItems[targetTodoItemIndex];
+		const newTodoItem = { ...targetTodoItem, text };
+
+		setTodoItems((currentTodoItems) => {
+			return [
+				...currentTodoItems.slice(0, targetTodoItemIndex),
+				newTodoItem,
+				...currentTodoItems.slice(targetTodoItemIndex + 1)
+			];
+		});
+	};
+
+	const handleFilter = (filter) => {
+		setFilter(filter);
+
+		setFilterItems(itemsFilter(filter, todoItems));
+	};
+
+	const handleDeleteAllCompleted = () => {
+		const incompletedTodoItems = todoItems.filter(({ complete }) => complete === false);
+		setTodoItems(incompletedTodoItems);
+	};
+
 	return (
 		<View style={styles.container}>
 			<TodoInput
@@ -177,17 +172,17 @@ const Todo = () => {
 			<View style={styles.content}>
 				<FlatList
 					style={styles.list}
-					data={data}
-					extraData={data}
+					data={filterItems}
+					extraData={todoItems}
 					onScroll={() => Keyboard.dismiss()}
 					renderItem={({ item }) => {
 						return (
 							<Row
 								key={item.key}
-								onUpdate={(text) => handleUpdateTodoItem(item.key, text)}
-								onToggleEdit={(editing) => handleToggleEditing(item.key, editing)}
-								onRemove={() => handleRemoveToDoItem(item.key)}
 								onComplete={(complete) => handleToggleCompleteItem(item.key, complete)}
+								onRemove={() => handleRemoveToDoItem(item.key)}
+								onToggleEdit={(editing) => handleToggleEditing(item.key, editing)}
+								onUpdate={(text) => handleUpdateTodoItem(item.key, text)}
 								{...item}
 							/>
 						);
@@ -199,17 +194,13 @@ const Todo = () => {
 			</View>
 
 			<Filter
-				count={filterItems('ACTIVE', todoItems).length}
+				count={itemsFilter('ACTIVE', todoItems).length}
 				onFilter={handleFilter}
 				filter={filter}
 				onClearComplete={handleDeleteAllCompleted}
 			/>
 
-			{loading && (
-				<View style={styles.loading}>
-					<ActivityIndicator animating size="large" />
-				</View>
-			)}
+			<Loading loading={loading} />
 		</View>
 	);
 };
@@ -222,22 +213,15 @@ const styles = StyleSheet.create({
 			ios: { paddingTop: 30 }
 		})
 	},
-	loading: {
-		position: 'absolute',
-		left: 0,
-		top: 0,
-		right: 0,
-		bottom: 0,
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: 'rgba(0,0,0,.2)'
-	},
+
 	content: {
 		flex: 1
 	},
+
 	list: {
 		backgroundColor: '#FFF'
 	},
+
 	separator: {
 		borderWidth: 1,
 		borderColor: '#F5F5F5'

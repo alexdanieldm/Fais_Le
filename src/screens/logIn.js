@@ -1,9 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, Button, Keyboard } from 'react-native';
+
+import { firebase } from '../firebase/config';
+
+import Loading from '../components/loading';
 
 const logIn = ({ navigation }) => {
-	const [ user, setUser ] = useState('');
+	const [ loading, setLoading ] = useState(false);
+
+	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
+
+	const onLogIn = () => {
+		Keyboard.dismiss();
+		setLoading(true);
+
+		firebase
+			.auth()
+			.signInWithEmailAndPassword(email, password)
+			.then((userCredential) => {
+				var user = userCredential.user;
+
+				const usersCollection = firebase.firestore().collection('users');
+
+				usersCollection
+					.doc(user.uid)
+					.get()
+					.then((firestoreDocument) => {
+						if (!firestoreDocument.exists) {
+							alert('User does not exist. Please try agin');
+							return;
+						}
+					})
+					.catch((error) => {
+						// alert(error.message);
+					});
+			})
+			.catch((error) => {
+				alert(error.message);
+				console.error(error);
+			})
+			.finally(() => {
+				setEmail('');
+				setPassword('');
+				setLoading(false);
+			});
+	};
 
 	return (
 		<View style={styles.container}>
@@ -15,9 +57,10 @@ const logIn = ({ navigation }) => {
 				<TextInput
 					style={styles.input}
 					placeholder="example@mail.com"
-					onChangeText={(user) => setUser(user)}
-					defaultValue={user}
+					onChangeText={(email) => setEmail(email)}
+					defaultValue={email}
 					blurOnSubmit={false}
+					keyboardType="email-address"
 				/>
 
 				<Text style={styles.label}>Password</Text>
@@ -28,24 +71,20 @@ const logIn = ({ navigation }) => {
 					onChangeText={(password) => setPassword(password)}
 					defaultValue={password}
 					blurOnSubmit={false}
+					secureTextEntry={true}
 				/>
 
-				<Button
-					title="Log in"
-					onPress={() => navigation.navigate('Todo')}
-					color="#0096bd"
-					accessibilityLabel="Access existing Account"
-				/>
+				<Button title="Log In" onPress={onLogIn} color="#0096bd" accessibilityLabel="Access existing Account" />
 
-				<Text style={styles.separator}>or</Text>
-
-				<Button
-					title="Sign Up"
-					onPress={() => navigation.navigate('SignUp')}
-					color="#969696"
-					accessibilityLabel="Create a new Account"
-				/>
+				<Text style={styles.signUp}>
+					Don't have an account?
+					<Text style={styles.signUpLink} onPress={() => navigation.navigate('SignUp')}>
+						{' '}
+						Sign up
+					</Text>
+				</Text>
 			</View>
+			<Loading loading={loading} />
 		</View>
 	);
 };
@@ -84,11 +123,15 @@ const styles = StyleSheet.create({
 		marginBottom: 20
 	},
 
-	separator: {
-		marginVertical: 10,
+	signUp: {
+		marginTop: 18,
 		fontSize: 13,
-		alignSelf: 'center',
-		fontStyle: 'italic'
+		alignSelf: 'center'
+	},
+
+	signUpLink: {
+		color: '#0096bd',
+		fontWeight: 'bold'
 	}
 });
 

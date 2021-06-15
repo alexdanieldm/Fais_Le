@@ -1,20 +1,52 @@
 import 'react-native-gesture-handler';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
+import { firebase } from './firebase/config';
 
 import Todo from './screens/todo';
 import LogIn from './screens/logIn';
 import SignUp from './screens/signUp';
 
+import Loading from './components/loading';
+import LogOutButton from './components/logOutButton'
+
 const Stack = createStackNavigator();
 
 const App = () => {
+	const [ isLoggedIn, setIsLoggedIn ] = useState(false);
+	const [loading, setLoading] = useState(true)
+
+	useEffect(() => {
+		firebase.auth().onAuthStateChanged((user) => {
+			if (user) {
+				setIsLoggedIn(true);
+			}
+			else {
+				setIsLoggedIn(false);
+			}
+			setLoading(false)
+		})
+		// const usersCollection = firebase.firestore().collection('users');
+	}, []);
+
+	const onSignOut = () => {
+		firebase.auth().signOut().catch((error) => {
+			alert(error.message);
+			console.error(error);
+		})
+	}
+
+	if (loading) {
+		return <Loading loading={loading} />
+	}
+
 	return (
 		<NavigationContainer>
 			<Stack.Navigator
-				initialRouteName="Log In"
 				screenOptions={{
 					headerShown: true,
 					title: '務',
@@ -27,13 +59,26 @@ const App = () => {
 						fontSize: 36
 					}
 				}}
-			>
-				<Stack.Screen name="LogIn" component={LogIn} />
-				<Stack.Screen name="SignUp" component={SignUp} />
-				<Stack.Screen name="Todo" component={Todo} />
+			>				
+				{isLoggedIn ? (					
+					<Stack.Screen name="Todo" component={Todo} 
+						options={{
+							headerRight: () => (
+								<LogOutButton onPress={onSignOut} />
+							),
+						}}
+					/>					
+        		) : (
+					<>
+						<Stack.Screen name="LogIn" component={LogIn} />
+						<Stack.Screen name="SignUp" component={SignUp} />
+					</>
+				)}
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
+
 };
+
 
 export default App;

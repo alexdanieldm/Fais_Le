@@ -134,3 +134,6 @@ buck-out/
 
 ### Bundle artifact ###
 *.jsbundle
+
+### Environment Variables ###
+.env

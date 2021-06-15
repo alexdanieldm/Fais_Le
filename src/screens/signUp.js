@@ -1,10 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, Button, Keyboard } from 'react-native';
+
+import { firebase } from '../firebase/config';
+
+import Loading from '../components/loading';
 
 const logIn = ({ navigation }) => {
-	const [ user, setUser ] = useState('');
+	const [ loading, setLoading ] = useState(false);
+
+	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
-	const [ name, setName ] = useState('');
+	const [ fullName, setFullName ] = useState('');
+
+	const onSignUp = () => {
+		Keyboard.dismiss();
+		setLoading(true);
+
+		firebase
+			.auth()
+			.createUserWithEmailAndPassword(email, password)
+			.then((userCredential) => {
+				var user = userCredential.user;
+				const newUser = {
+					id: user.uid,
+					email,
+					fullName
+				};
+
+				const usersCollection = firebase.firestore().collection('users');
+				usersCollection.doc(user.uid).set(newUser).catch((error) => {
+					alert(error.message);
+					console.error(error);
+				});
+
+				navigation.navigate('LogIn');
+			})
+			.catch((error) => {
+				alert(error.message);
+				console.error(error);
+			})
+			.finally(() => {
+				setFullName('');
+				setEmail('');
+				setPassword('');
+				setLoading(false);
+			});
+	};
 
 	return (
 		<View style={styles.container}>
@@ -16,9 +57,10 @@ const logIn = ({ navigation }) => {
 				<TextInput
 					style={styles.input}
 					placeholder="Alex Duran"
-					onChange={(name) => setName(name)}
-					defaultValue={name}
+					onChangeText={(fullName) => setFullName(fullName)}
+					defaultValue={fullName}
 					blurOnSubmit={false}
+					keyboardType="default"
 				/>
 
 				<Text style={styles.label}>Email</Text>
@@ -26,9 +68,10 @@ const logIn = ({ navigation }) => {
 				<TextInput
 					style={styles.input}
 					placeholder="example@mail.com"
-					onChangeText={(user) => setUser(user)}
-					defaultValue={user}
+					onChangeText={(email) => setEmail(email)}
+					defaultValue={email}
 					blurOnSubmit={false}
+					keyboardType="email-address"
 				/>
 
 				<Text style={styles.label}>Password</Text>
@@ -38,25 +81,25 @@ const logIn = ({ navigation }) => {
 					placeholder="Enter password"
 					onChangeText={(password) => setPassword(password)}
 					defaultValue={password}
-					blurOnSubmit={false}
+					secureTextEntry={true}
 				/>
 
 				<Button
-					title="Sign Up"
-					onPress={() => navigation.navigate('LogIn')}
+					title="Create account"
+					onPress={onSignUp}
 					color="#0096bd"
 					accessibilityLabel="Create a new Account"
 				/>
 
-				<Text style={styles.separator}>or</Text>
-
-				<Button
-					title="Log in"
-					onPress={() => navigation.navigate('LogIn')}
-					color="#969696"
-					accessibilityLabel="Access existing Account"
-				/>
+				<Text style={styles.signUp}>
+					Already have an account?
+					<Text style={styles.signUpLink} onPress={() => navigation.navigate('LogIn')}>
+						{' '}
+						Log In
+					</Text>
+				</Text>
 			</View>
+			<Loading loading={loading} />
 		</View>
 	);
 };
@@ -95,11 +138,15 @@ const styles = StyleSheet.create({
 		marginBottom: 20
 	},
 
-	separator: {
-		marginVertical: 10,
+	signUp: {
+		marginTop: 18,
 		fontSize: 13,
-		alignSelf: 'center',
-		fontStyle: 'italic'
+		alignSelf: 'center'
+	},
+
+	signUpLink: {
+		color: '#0096bd',
+		fontWeight: 'bold'
 	}
 });
 
