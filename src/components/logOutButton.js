@@ -9,15 +9,16 @@ const LogOutButton = ({ onPress }) => (
 
 const styles = StyleSheet.create({
 	label: {
+		fontSize: 14,
 		fontWeight: 'bold',
 		fontStyle: 'italic',
 		color: 'white'
 	},
 
 	button: {
-		padding: 8,
+		padding: 7,
 		borderRadius: 5,
-		borderWidth: 1.2,
+		borderWidth: 1,
 		borderColor: 'white',
 		marginRight: 10
 	}

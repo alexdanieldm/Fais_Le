@@ -5,6 +5,10 @@ import { firebase } from '../firebase/config';
 
 import Loading from '../components/loading';
 
+// ! DEBUG FUNCTIONS ROUTE
+import LogAndTime from '../utils/logWithTime';
+// ! DEBUG FUNCTIONS ROUTE
+
 const logIn = ({ navigation }) => {
 	const [ loading, setLoading ] = useState(false);
 
@@ -21,17 +25,25 @@ const logIn = ({ navigation }) => {
 			.createUserWithEmailAndPassword(email, password)
 			.then((userCredential) => {
 				var user = userCredential.user;
+
 				const newUser = {
 					id: user.uid,
-					email,
-					fullName
+					fullName,
+					email
 				};
 
 				const usersCollection = firebase.firestore().collection('users');
-				usersCollection.doc(user.uid).set(newUser).catch((error) => {
-					alert(error.message);
-					console.error(error);
-				});
+
+				usersCollection
+					.add(newUser)
+					.then((docRef) => {
+						LogAndTime(`Document written with ID: ${docRef.id}`);
+					})
+					.catch((error) => {
+						alert(error.message);
+						LogAndTime('Error adding document');
+						console.error(error);
+					});
 
 				navigation.navigate('LogIn');
 			})

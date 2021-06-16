@@ -1,4 +1,3 @@
-// ! DEBUG FUNCTIONS
 const LogWithTime = (message, statesArray) => {
 	let timeStamp = `@ ${new Date().getHours()}hrs ${new Date().getMinutes()}min ${new Date().getSeconds()}s ${new Date().getMilliseconds()}s`;
 
@@ -15,6 +14,9 @@ const LogWithTime = (message, statesArray) => {
 	}
 	console.log('');
 };
-// ! DEBUG FUNCTIONS
+
+// ! DEBUG FUNCTIONS ROUTE
+// import LogWithTime from './utils/logWithTime'
+// ! DEBUG FUNCTIONS ROUTE
 
 export default LogWithTime;
