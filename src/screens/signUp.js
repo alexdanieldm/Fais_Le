@@ -5,9 +5,9 @@ import { firebase } from '../firebase/config';
 
 import Loading from '../components/loading';
 
-// ! DEBUG FUNCTIONS ROUTE
-import LogAndTime from '../utils/logWithTime';
-// ! DEBUG FUNCTIONS ROUTE
+// ! DELETE AFTER DEBUGGING SESSION
+import timed_log from '../utils/timedLog';
+// ! DELETE AFTER DEBUGGING SESSION
 
 const logIn = ({ navigation }) => {
 	const [ loading, setLoading ] = useState(false);
@@ -27,9 +27,10 @@ const logIn = ({ navigation }) => {
 				var user = userCredential.user;
 
 				const newUser = {
-					id: user.uid,
+					uid: user.uid,
 					fullName,
-					email
+					email,
+					joined: new Date()
 				};
 
 				const usersCollection = firebase.firestore().collection('users');
@@ -37,19 +38,15 @@ const logIn = ({ navigation }) => {
 				usersCollection
 					.add(newUser)
 					.then((docRef) => {
-						LogAndTime(`Document written with ID: ${docRef.id}`);
+						timed_log(`Document written with ID: ${docRef.id}`);
 					})
 					.catch((error) => {
-						alert(error.message);
-						LogAndTime('Error adding document');
+						alert('Error creating your new Account. Please try again later');
 						console.error(error);
 					});
-
-				navigation.navigate('LogIn');
 			})
 			.catch((error) => {
 				alert(error.message);
-				console.error(error);
 			})
 			.finally(() => {
 				setFullName('');

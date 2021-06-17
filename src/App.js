@@ -30,13 +30,11 @@ const App = () => {
 			}
 			setLoading(false)
 		})
-		// const usersCollection = firebase.firestore().collection('users');
 	}, []);
 
 	const onSignOut = () => {
 		firebase.auth().signOut().catch((error) => {
 			alert(error.message);
-			console.error(error);
 		})
 	}
 
