@@ -18,6 +18,6 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
 	firebase.initializeApp(firebaseConfig);
 }
-firebase.firestore().settings({ experimentalAutoDetectLongPolling: true });
+firebase.firestore().settings({ merge: true, experimentalAutoDetectLongPolling: true });
 
 export { firebase };
