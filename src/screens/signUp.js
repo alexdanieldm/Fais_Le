@@ -18,7 +18,9 @@ const logIn = ({ navigation }) => {
 
 	const onSignUp = () => {
 		Keyboard.dismiss();
+
 		setLoading(true);
+		const usersCollection = firebase.firestore().collection('users');
 
 		firebase
 			.auth()
@@ -26,19 +28,18 @@ const logIn = ({ navigation }) => {
 			.then((userCredential) => {
 				var user = userCredential.user;
 
-				const newUser = {
-					uid: user.uid,
+				const data = {
 					fullName,
 					email,
 					joined: new Date()
 				};
 
-				const usersCollection = firebase.firestore().collection('users');
-
+				timed_log('Writing...');
 				usersCollection
-					.add(newUser)
+					.doc(user.uid)
+					.set(data)
 					.then((docRef) => {
-						timed_log(`Document written with ID: ${docRef.id}`);
+						timed_log(`Document written with ID: ${data.id}`);
 					})
 					.catch((error) => {
 						alert('Error creating your new Account. Please try again later');
@@ -46,13 +47,13 @@ const logIn = ({ navigation }) => {
 					});
 			})
 			.catch((error) => {
-				alert(error.message);
-			})
-			.finally(() => {
+				setLoading(false);
+
 				setFullName('');
 				setEmail('');
 				setPassword('');
-				setLoading(false);
+
+				alert(error.message);
 			});
 	};
 
