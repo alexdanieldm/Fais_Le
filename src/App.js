@@ -14,10 +14,6 @@ import SignUp from './screens/signUp';
 import Loading from './components/loading';
 import LogOutButton from './components/logOutButton';
 
-// ! DELETE AFTER DEBUGGING SESSION
-import timed_log from './utils/timedLog';
-// ! DELETE AFTER DEBUGGING SESSION
-
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -26,28 +22,27 @@ const App = () => {
 
 	useEffect(() => {
 		setLoading(true);
-		const usersCollection = firebase.firestore().collection('users');
-
+		
 		firebase.auth().onAuthStateChanged( user => {
 			if (user) {
-				timed_log(`Start Login...`);
+				const usersCollection = firebase.firestore().collection('users');
 				usersCollection
 					.doc(user.uid)
 					.get()
 					.then((document) => {
-						timed_log(`Logged as: ${user.email} -- ${user.uid} --`);
 						const userData = document.data()
-						setLoading(false)
 						setUser(userData)
+						setLoading(false)
 					})
 					.catch((error) => {
 						console.error(error)
-						alert(error.message)
 						setLoading(false)
+						alert(
+							'Your device does not have a healthy Internet connection. Try again later'
+						)
 					})
 			}
 			else {
-				timed_log('No User Found');
 				setLoading(false);
 			}
 		});

@@ -5,10 +5,6 @@ import { firebase } from '../firebase/config';
 
 import Loading from '../components/loading';
 
-// ! DELETE AFTER DEBUGGING SESSION
-import timed_log from '../utils/timedLog';
-// ! DELETE AFTER DEBUGGING SESSION
-
 const logIn = ({ navigation }) => {
 	const [ loading, setLoading ] = useState(false);
 
@@ -34,17 +30,10 @@ const logIn = ({ navigation }) => {
 					joined: new Date()
 				};
 
-				timed_log('Writing...');
-				usersCollection
-					.doc(user.uid)
-					.set(data)
-					.then((docRef) => {
-						timed_log(`Document written with ID: ${data.id}`);
-					})
-					.catch((error) => {
-						alert('Error creating your new Account. Please try again later');
-						console.error(error);
-					});
+				usersCollection.doc(user.uid).set(data).catch((error) => {
+					alert('Error creating your new Account. Please try again later');
+					console.error(error);
+				});
 			})
 			.catch((error) => {
 				setLoading(false);
