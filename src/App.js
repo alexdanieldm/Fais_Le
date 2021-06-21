@@ -12,36 +12,50 @@ import LogIn from './screens/logIn';
 import SignUp from './screens/signUp';
 
 import Loading from './components/loading';
-import LogOutButton from './components/logOutButton'
+import LogOutButton from './components/logOutButton';
 
 const Stack = createStackNavigator();
 
 const App = () => {
-	const [ isLoggedIn, setIsLoggedIn ] = useState(false);
-	const [loading, setLoading] = useState(true)
+	const [ loading, setLoading ] = useState(false);
+	const [user, setUser] = useState(null);
 
 	useEffect(() => {
-		firebase.auth().onAuthStateChanged((user) => {
+		setLoading(true);
+		
+		firebase.auth().onAuthStateChanged( user => {
 			if (user) {
-				setIsLoggedIn(true);
+				const usersCollection = firebase.firestore().collection('users');
+				usersCollection
+					.doc(user.uid)
+					.get()
+					.then((document) => {
+						const userData = document.data()
+						setUser(userData)
+						setLoading(false)
+					})
+					.catch((error) => {
+						console.error(error)
+						setLoading(false)
+						alert(
+							'Your device does not have a healthy Internet connection. Try again later'
+						)
+					})
 			}
 			else {
-				setIsLoggedIn(false);
+				setLoading(false);
 			}
-			setLoading(false)
-		})
-		// const usersCollection = firebase.firestore().collection('users');
+		});
 	}, []);
 
 	const onSignOut = () => {
 		firebase.auth().signOut().catch((error) => {
 			alert(error.message);
-			console.error(error);
-		})
-	}
+		});
+	};
 
 	if (loading) {
-		return <Loading loading={loading} />
+		return <Loading loading={loading} />;
 	}
 
 	return (
@@ -60,14 +74,16 @@ const App = () => {
 					}
 				}}
 			>				
-				{isLoggedIn ? (					
-					<Stack.Screen name="Todo" component={Todo} 
+				{user ? (		
+					<Stack.Screen name="Todo"
 						options={{
 							headerRight: () => (
 								<LogOutButton onPress={onSignOut} />
 							),
 						}}
-					/>					
+					>
+						{props => <Todo {...props} user={user} />}
+					</Stack.Screen>									
         		) : (
 					<>
 						<Stack.Screen name="LogIn" component={LogIn} />

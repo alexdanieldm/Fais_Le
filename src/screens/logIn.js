@@ -7,7 +7,6 @@ import Loading from '../components/loading';
 
 const logIn = ({ navigation }) => {
 	const [ loading, setLoading ] = useState(false);
-
 	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
 
@@ -33,17 +32,21 @@ const logIn = ({ navigation }) => {
 						}
 					})
 					.catch((error) => {
-						// alert(error.message);
+						setLoading(false);
+
+						setEmail('');
+						setPassword('');
+
+						alert(error.message);
 					});
 			})
 			.catch((error) => {
-				alert(error.message);
-				console.error(error);
-			})
-			.finally(() => {
+				setLoading(false);
+
 				setEmail('');
 				setPassword('');
-				setLoading(false);
+
+				alert(error.message);
 			});
 	};
 

@@ -14,36 +14,35 @@ const logIn = ({ navigation }) => {
 
 	const onSignUp = () => {
 		Keyboard.dismiss();
+
 		setLoading(true);
+		const usersCollection = firebase.firestore().collection('users');
 
 		firebase
 			.auth()
 			.createUserWithEmailAndPassword(email, password)
 			.then((userCredential) => {
 				var user = userCredential.user;
-				const newUser = {
-					id: user.uid,
+
+				const data = {
+					fullName,
 					email,
-					fullName
+					joined: new Date()
 				};
 
-				const usersCollection = firebase.firestore().collection('users');
-				usersCollection.doc(user.uid).set(newUser).catch((error) => {
-					alert(error.message);
+				usersCollection.doc(user.uid).set(data).catch((error) => {
+					alert('Error creating your new Account. Please try again later');
 					console.error(error);
 				});
-
-				navigation.navigate('LogIn');
 			})
 			.catch((error) => {
-				alert(error.message);
-				console.error(error);
-			})
-			.finally(() => {
+				setLoading(false);
+
 				setFullName('');
 				setEmail('');
 				setPassword('');
-				setLoading(false);
+
+				alert(error.message);
 			});
 	};
 
