@@ -35,6 +35,7 @@ const App = () => {
 						setLoading(false)
 					})
 					.catch((error) => {
+						firebase.auth().signOut()
 						console.error(error)
 						setLoading(false)
 						alert(
