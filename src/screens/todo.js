@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, Platform, Keyboard, FlatList } from 'react-native';
+import { View, StyleSheet, Platform, Keyboard, FlatList } from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { firebase } from '../firebase/config';
 
 import TodoInput from '../components/todoInput';
 import Filter from '../components/filter';
@@ -10,7 +10,7 @@ import Loading from '../components/loading';
 
 import itemsFilter from '../utils/itemsFilter';
 
-const Todo = () => {
+const Todo = ({ user }) => {
 	const [ loading, setLoading ] = useState(false);
 	const [ inputValue, setInputValue ] = useState('');
 	const [ filter, setFilter ] = useState('ALL');
@@ -18,27 +18,34 @@ const Todo = () => {
 	const [ filterItems, setFilterItems ] = useState([]);
 
 	useEffect(() => {
+		console.log(user);
 		setLoading(true);
-		AsyncStorage.getItem('items').then((json) => {
-			try {
-				// TODO : Move from AsyncStorage to Firebase DB
 
-				const parseJSON = JSON.parse(json);
-				setTodoItems(parseJSON);
-			} catch (e) {
-				console.error(e);
-			} finally {
+		const userReference = firebase.firestore().collection('users').doc(user.uid);
+
+		userReference
+			.collection('todoItems')
+			.get()
+			.then((querySnapshot) => {
+				const userItems = [];
+
+				querySnapshot.forEach((doc) => {
+					userItems.push(doc.data());
+				});
+
+				console.table(userItems);
+				setTodoItems(userItems);
 				setLoading(false);
-			}
-		});
+			})
+			.catch((error) => {
+				console.error(error);
+				setLoading(false);
+			});
 	}, []);
 
 	useEffect(
-		async () => {
-			const updatedItems = await itemsFilter(filter, todoItems);
-			setFilterItems(updatedItems);
-
-			AsyncStorage.setItem('items', JSON.stringify(todoItems));
+		() => {
+			setFilterItems(itemsFilter(filter, todoItems));
 		},
 		[ todoItems ]
 	);
