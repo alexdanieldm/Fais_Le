@@ -8,25 +8,7 @@ import Filter from '../components/filter';
 import Row from '../components/row';
 import Loading from '../components/loading';
 
-const itemsFilter = (filter, items) => {
-	try {
-		const itemsAfterFilter = items.filter((item) => {
-			if (filter === 'ALL') {
-				return true;
-			}
-			if (filter === 'COMPLETED') {
-				return item.complete;
-			}
-			if (filter === 'ACTIVE') {
-				return !item.complete;
-			}
-		});
-		return itemsAfterFilter;
-	} catch (e) {
-		alert(e);
-		console.error(e);
-	}
-};
+import itemsFilter from '../utils/itemsFilter';
 
 const Todo = () => {
 	const [ loading, setLoading ] = useState(false);
