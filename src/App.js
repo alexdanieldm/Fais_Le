@@ -29,21 +29,21 @@ const App = () => {
 				usersCollection
 					.doc(user.uid)
 					.get()
-					.then((document) => {
-						const userData = document.data()
-						setUser(userData)
+					.then(() => {
+						setUser(user)
 						setLoading(false)
 					})
 					.catch((error) => {
 						firebase.auth().signOut()
 						console.error(error)
-						setLoading(false)
 						alert(
 							'Your device does not have a healthy Internet connection. Try again later'
 						)
+						setLoading(false)
 					})
 			}
 			else {
+				setUser(null)
 				setLoading(false);
 			}
 		});
@@ -51,6 +51,7 @@ const App = () => {
 
 	const onSignOut = () => {
 		firebase.auth().signOut().catch((error) => {
+			console.error(error)
 			alert(error.message);
 		});
 	};
