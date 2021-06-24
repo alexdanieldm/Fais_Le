@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, TextInput } from 'react-native';
 
 const Item = ({ complete, onToggleEdit, text }) => (
@@ -26,19 +26,22 @@ const DoneButton = ({ onToggleEdit }) => (
 );
 
 const Row = (props) => {
+	const [ itsComplete, setItsComplete ] = useState(props.complete);
+
 	return (
 		<View style={styles.container}>
 			<Switch
 				thumbColor={props.complete ? '#f4f3f4' : '#f4f3f4'}
 				trackColor={{ true: '#45C8EB', false: '#bababa' }}
-				value={props.complete}
+				value={itsComplete}
+				onChange={() => setItsComplete(!props.complete)}
 				onValueChange={props.onComplete}
 			/>
 
 			{props.editing ? (
 				<EditButton text={props.text} onUpdate={props.onUpdate} />
 			) : (
-				<Item onToggleEdit={props.onToggleEdit} text={props.text} complete={props.complete} />
+				<Item onToggleEdit={props.onToggleEdit} text={props.text} complete={itsComplete} />
 			)}
 
 			{props.editing ? (
