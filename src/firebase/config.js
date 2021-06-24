@@ -8,8 +8,7 @@ import { LogBox } from 'react-native';
 //! Ignore log notification by message (Warning without fix):
 LogBox.ignoreLogs([
 	'Setting a timer for a long period of time',
-	'AsyncStorage has been extracted from react-native core and will be removed in a future release.',
-	'DevTools failed to load source map'
+	'AsyncStorage has been extracted from react-native core and will be removed in a future release.'
 ]);
 
 import { API_KEY, AUTH_DOMAIN, DATABASE_URL, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } from '@env';
