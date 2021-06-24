@@ -18,12 +18,12 @@ const Todo = ({ user }) => {
 	const [ filterItems, setFilterItems ] = useState([]);
 
 	const userReference = firebase.firestore().collection('users').doc(user.uid);
+	const todoItemsCollection = userReference.collection('todoItems');
 
 	useEffect(() => {
 		setLoading(true);
 
-		userReference
-			.collection('todoItems')
+		todoItemsCollection
 			.get()
 			.then((querySnapshot) => {
 				const userItems = [];
@@ -53,7 +53,7 @@ const Todo = ({ user }) => {
 			return;
 		}
 
-		const newItemRef = userReference.collection('todoItems').doc();
+		const newItemRef = todoItemsCollection.doc();
 
 		const newItem = {
 			key: newItemRef.id,
@@ -97,6 +97,10 @@ const Todo = ({ user }) => {
 				...currentTodoItems.slice(targetTodoItemIndex + 1)
 			];
 		});
+
+		todoItemsCollection.doc(key).update({ complete }).catch((error) => {
+			console.error(error);
+		});
 	};
 
 	const handleRemoveToDoItem = (key) => {
@@ -109,7 +113,7 @@ const Todo = ({ user }) => {
 			];
 		});
 
-		userReference.collection('todoItems').doc(key).delete().catch((error) => {
+		todoItemsCollection.doc(key).delete().catch((error) => {
 			console.error(error);
 		});
 	};
@@ -139,6 +143,10 @@ const Todo = ({ user }) => {
 				newTodoItem,
 				...currentTodoItems.slice(targetTodoItemIndex + 1)
 			];
+		});
+
+		todoItemsCollection.doc(key).update({ text }).catch((error) => {
+			console.error(error);
 		});
 	};
 
