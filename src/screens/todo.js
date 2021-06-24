@@ -83,7 +83,6 @@ const Todo = ({ user }) => {
 
 			return newTodoItem;
 		});
-		setFilterItems(itemsFilter(filter, todoItems));
 	};
 
 	const handleToggleCompleteItem = (key, complete) => {
@@ -108,6 +107,10 @@ const Todo = ({ user }) => {
 				...currentTodoItems.slice(0, targetTodoItemIndex),
 				...currentTodoItems.slice(targetTodoItemIndex + 1)
 			];
+		});
+
+		userReference.collection('todoItems').doc(key).delete().catch((error) => {
+			console.error(error);
 		});
 	};
 
@@ -163,7 +166,7 @@ const Todo = ({ user }) => {
 				<FlatList
 					style={styles.list}
 					data={filterItems}
-					extraData={todoItems}
+					extraData={filterItems}
 					onScroll={() => Keyboard.dismiss()}
 					renderItem={({ item }) => {
 						return (
