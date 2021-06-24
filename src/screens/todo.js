@@ -18,7 +18,6 @@ const Todo = ({ user }) => {
 	const [ filterItems, setFilterItems ] = useState([]);
 
 	useEffect(() => {
-		console.log(user);
 		setLoading(true);
 
 		const userReference = firebase.firestore().collection('users').doc(user.uid);
@@ -33,7 +32,6 @@ const Todo = ({ user }) => {
 					userItems.push(doc.data());
 				});
 
-				console.table(userItems);
 				setTodoItems(userItems);
 				setLoading(false);
 			})
