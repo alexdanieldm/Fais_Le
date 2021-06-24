@@ -17,10 +17,10 @@ const Todo = ({ user }) => {
 	const [ todoItems, setTodoItems ] = useState([]);
 	const [ filterItems, setFilterItems ] = useState([]);
 
+	const userReference = firebase.firestore().collection('users').doc(user.uid);
+
 	useEffect(() => {
 		setLoading(true);
-
-		const userReference = firebase.firestore().collection('users').doc(user.uid);
 
 		userReference
 			.collection('todoItems')
@@ -53,15 +53,18 @@ const Todo = ({ user }) => {
 			return;
 		}
 
+		const newItemRef = userReference.collection('todoItems').doc();
+
+		const newItem = {
+			key: newItemRef.id,
+			text: inputValue,
+			complete: false
+		};
+
+		newItemRef.set(newItem);
+
 		setTodoItems((currentTodoItems) => {
-			return [
-				...currentTodoItems,
-				{
-					key: Date.now(),
-					text: inputValue,
-					complete: false
-				}
-			];
+			return [ ...currentTodoItems, newItem ];
 		});
 
 		setInputValue('');
