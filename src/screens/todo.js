@@ -24,6 +24,7 @@ const Todo = ({ user }) => {
 		setLoading(true);
 
 		todoItemsCollection
+			.orderBy('createdAt')
 			.get()
 			.then((querySnapshot) => {
 				const userItems = [];
@@ -58,7 +59,8 @@ const Todo = ({ user }) => {
 		const newItem = {
 			key: newItemRef.id,
 			text: inputValue,
-			complete: false
+			complete: false,
+			createdAt: firebase.firestore.FieldValue.serverTimestamp()
 		};
 
 		newItemRef.set(newItem);
