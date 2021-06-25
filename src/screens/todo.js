@@ -175,6 +175,20 @@ const Todo = ({ user }) => {
 	const handleDeleteAllCompleted = () => {
 		const incompletedTodoItems = todoItems.filter(({ complete }) => complete === false);
 		setTodoItems(incompletedTodoItems);
+
+		todoItemsCollection
+			.where('complete', '==', true)
+			.get()
+			.then((querySnapshot) => {
+				querySnapshot.forEach((item) => {
+					todoItemsCollection.doc(item.id).delete().catch((error) => {
+						console.error(error);
+					});
+				});
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	};
 
 	return (
