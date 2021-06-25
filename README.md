@@ -1,49 +1,70 @@
 # To Do Application
 
-A To Do application build with React Native for mobile devices, this its a *__REFACTOR__* of the app build on course [_"Build a React Native Todo Application"_](https://egghead.io/courses/build-a-react-native-todo-application) on __Egghead__
+Application for mobile devices (iOS or Android) build with React Native and Firebase.
+_[See here](https://egghead.io/courses/build-a-react-native-todo-application) a version without all the feautures listed below_
 
-### Main Changes
+## Features
 
-The more important and significant changes made compare to the original app made on [this course](https://egghead.io/courses/build-a-react-native-todo-application), are the following:
+A Firebase implementation with a connection to Firestore documents, to allow the app to:
 
-1. From _Class Components_ to __*Functional Components*__
-2. From _`ListView`_ component to __*`FlatList`*__ component
-3. From _`componentWillMount`_ to __*`useEffect()`*__ hook
-4. All function (or Hooks) are more __declarative__ *(trust me this is important)* and use __ECMAScript 2015__ best practices
+1. _User `Creation` and `Authentication`_
 
-### Getting Started
+2. _`Synchronize` data across multiple devices_
+
+3. _`Persist` user Credentials_
+
+4. _Real time `CRUD` ( that is Create, Read, Update and Delete data )_
+
+Significant changes made compare to [this version](https://egghead.io/courses/build-a-react-native-todo-application), are the following:
+
+1. _From Class Components to **Functional Components**_
+
+2. _From `ListView` component to **`FlatList`** component_
+
+3. _From `componentWillMount` to **`useEffect()`** hook_
+
+4. _All function and Hooks are more **declarative** (trust me it matters) and use **ECMAScript 2015** best practices_
+
+## Getting Started
 
 1. First, remember to install all the dependencies by ruuning:  
 
-```bash
-npm install
-```  
+    ```bash
+    npm install
+    ```
 
 2. Now you will need to start Metro, the JavaScript bundler that ships with React Native, let Metro run in its own terminal, please run:
 
-```bash
-npm run start
-```
+    ```bash
+    npm run start
+    ```
 
 3. To have all environment variables set follow two steps:
 
-* Create a .env file base on the template provide:
-```sh
-cp env.template .env
-```
+   - Create a .env file base on the template provide:
 
-* There replace all values with your firebase configuration. You can get all this information from [Firebase Console](https://console.firebase.google.com/) -> Project Settings
+    ```sh
+    cp env.template .env
+    ```
 
-4. Finally, while running Metro, open a new terminal and run the following:
+    - There replace all values with your firebase configuration. You can get all this information from [Firebase Console](https://console.firebase.google.com/) -> Project Settings
 
-```bash
-npm run android
-```  
+4. Finally, while running Metro, open a new terminal and run either:
 
-### Caveats
+    - _For Andorid:_
 
-* _This app uses "AsyncStorage", thus all instances of it are imported from a community library_
+    ```bash
+    npm run android
+    ```
 
-  ```javascript
-  import AsyncStorage from '@react-native-async-storage/async-storage';
-  ```
+    - _For iOS:_
+
+    ```bash
+    npm run ios
+    ```
+
+    - _For Cleaning build:_
+
+    ```bash
+    npm run clean
+    ```

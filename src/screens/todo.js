@@ -18,12 +18,13 @@ const Todo = ({ user }) => {
 	const [ filterItems, setFilterItems ] = useState([]);
 
 	const userReference = firebase.firestore().collection('users').doc(user.uid);
+	const todoItemsCollection = userReference.collection('todoItems');
 
 	useEffect(() => {
 		setLoading(true);
 
-		userReference
-			.collection('todoItems')
+		todoItemsCollection
+			.orderBy('createdAt')
 			.get()
 			.then((querySnapshot) => {
 				const userItems = [];
@@ -53,21 +54,22 @@ const Todo = ({ user }) => {
 			return;
 		}
 
-		const newItemRef = userReference.collection('todoItems').doc();
+		const newItemRef = todoItemsCollection.doc();
 
 		const newItem = {
 			key: newItemRef.id,
 			text: inputValue,
-			complete: false
+			complete: false,
+			createdAt: firebase.firestore.FieldValue.serverTimestamp()
 		};
-
-		newItemRef.set(newItem);
 
 		setTodoItems((currentTodoItems) => {
 			return [ ...currentTodoItems, newItem ];
 		});
 
 		setInputValue('');
+
+		newItemRef.set(newItem);
 	};
 
 	const handleToggleCompleteAllItems = () => {
@@ -83,6 +85,20 @@ const Todo = ({ user }) => {
 
 			return newTodoItem;
 		});
+
+		todoItemsCollection
+			.where('complete', '!=', !itsAllComplete)
+			.get()
+			.then((querySnapshot) => {
+				querySnapshot.forEach((item) => {
+					todoItemsCollection.doc(item.id).update({ complete: !itsAllComplete }).catch((error) => {
+						console.error(error);
+					});
+				});
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	};
 
 	const handleToggleCompleteItem = (key, complete) => {
@@ -97,6 +113,10 @@ const Todo = ({ user }) => {
 				...currentTodoItems.slice(targetTodoItemIndex + 1)
 			];
 		});
+
+		todoItemsCollection.doc(key).update({ complete }).catch((error) => {
+			console.error(error);
+		});
 	};
 
 	const handleRemoveToDoItem = (key) => {
@@ -109,7 +129,7 @@ const Todo = ({ user }) => {
 			];
 		});
 
-		userReference.collection('todoItems').doc(key).delete().catch((error) => {
+		todoItemsCollection.doc(key).delete().catch((error) => {
 			console.error(error);
 		});
 	};
@@ -140,6 +160,10 @@ const Todo = ({ user }) => {
 				...currentTodoItems.slice(targetTodoItemIndex + 1)
 			];
 		});
+
+		todoItemsCollection.doc(key).update({ text }).catch((error) => {
+			console.error(error);
+		});
 	};
 
 	const handleFilter = (filter) => {
@@ -150,7 +174,22 @@ const Todo = ({ user }) => {
 
 	const handleDeleteAllCompleted = () => {
 		const incompletedTodoItems = todoItems.filter(({ complete }) => complete === false);
+
 		setTodoItems(incompletedTodoItems);
+
+		todoItemsCollection
+			.where('complete', '==', true)
+			.get()
+			.then((querySnapshot) => {
+				querySnapshot.forEach((item) => {
+					todoItemsCollection.doc(item.id).delete().catch((error) => {
+						console.error(error);
+					});
+				});
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	};
 
 	return (
@@ -166,7 +205,7 @@ const Todo = ({ user }) => {
 				<FlatList
 					style={styles.list}
 					data={filterItems}
-					extraData={filterItems}
+					extraData={todoItems}
 					onScroll={() => Keyboard.dismiss()}
 					renderItem={({ item }) => {
 						return (
