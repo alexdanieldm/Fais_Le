@@ -27,7 +27,7 @@ const logIn = ({ navigation }) => {
 				const data = {
 					fullName,
 					email,
-					joined: new Date()
+					joined: firebase.firestore.FieldValue.serverTimestamp()
 				};
 
 				usersCollection.doc(user.uid).set(data).catch((error) => {
