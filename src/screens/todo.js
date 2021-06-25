@@ -85,6 +85,20 @@ const Todo = ({ user }) => {
 
 			return newTodoItem;
 		});
+
+		todoItemsCollection
+			.where('complete', '!=', !itsAllComplete)
+			.get()
+			.then((querySnapshot) => {
+				querySnapshot.forEach((item) => {
+					todoItemsCollection.doc(item.id).update({ complete: !itsAllComplete }).catch((error) => {
+						console.error(error);
+					});
+				});
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	};
 
 	const handleToggleCompleteItem = (key, complete) => {
