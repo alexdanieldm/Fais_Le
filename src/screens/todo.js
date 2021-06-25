@@ -63,13 +63,13 @@ const Todo = ({ user }) => {
 			createdAt: firebase.firestore.FieldValue.serverTimestamp()
 		};
 
-		newItemRef.set(newItem);
-
 		setTodoItems((currentTodoItems) => {
 			return [ ...currentTodoItems, newItem ];
 		});
 
 		setInputValue('');
+
+		newItemRef.set(newItem);
 	};
 
 	const handleToggleCompleteAllItems = () => {
@@ -174,6 +174,7 @@ const Todo = ({ user }) => {
 
 	const handleDeleteAllCompleted = () => {
 		const incompletedTodoItems = todoItems.filter(({ complete }) => complete === false);
+
 		setTodoItems(incompletedTodoItems);
 
 		todoItemsCollection
@@ -204,7 +205,7 @@ const Todo = ({ user }) => {
 				<FlatList
 					style={styles.list}
 					data={filterItems}
-					extraData={filterItems}
+					extraData={todoItems}
 					onScroll={() => Keyboard.dismiss()}
 					renderItem={({ item }) => {
 						return (
