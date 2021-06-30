@@ -5,14 +5,14 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { firebase } from './firebase/config';
+import { firebase } from './src/firebase/config';
 
-import Todo from './screens/todo';
-import LogIn from './screens/logIn';
-import SignUp from './screens/signUp';
+import Todo from './src/screens/todo';
+import LogIn from './src/screens/logIn';
+import SignUp from './src/screens/signUp';
 
-import Loading from './components/loading';
-import LogOutButton from './components/logOutButton';
+import Loading from './src/components/loading';
+import LogOutButton from './src/components/logOutButton';
 
 const Stack = createStackNavigator();
 
