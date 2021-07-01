@@ -14,40 +14,14 @@ const logIn = ({ navigation }) => {
 		Keyboard.dismiss();
 		setLoading(true);
 
-		firebase
-			.auth()
-			.signInWithEmailAndPassword(email, password)
-			.then((userCredential) => {
-				var user = userCredential.user;
+		firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {
+			setLoading(false);
 
-				const usersCollection = firebase.firestore().collection('users');
+			setEmail('');
+			setPassword('');
 
-				usersCollection
-					.doc(user.uid)
-					.get()
-					.then((firestoreDocument) => {
-						if (!firestoreDocument.exists) {
-							alert('User does not exist. Please try agin');
-							return;
-						}
-					})
-					.catch((error) => {
-						setLoading(false);
-
-						setEmail('');
-						setPassword('');
-
-						alert(error.message);
-					});
-			})
-			.catch((error) => {
-				setLoading(false);
-
-				setEmail('');
-				setPassword('');
-
-				alert(error.message);
-			});
+			alert(error.message);
+		});
 	};
 
 	return (
