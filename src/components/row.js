@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, TextInput } from 'react-native';
 
+import Trash from '../assets/svgs/trash';
+
 const Item = ({ complete, onToggleEdit, text }) => (
 	<TouchableOpacity style={styles.textWrap} onLongPress={() => onToggleEdit(true)}>
 		<Text style={[ styles.text, complete && styles.complete ]}>{text}</Text>
@@ -9,7 +11,7 @@ const Item = ({ complete, onToggleEdit, text }) => (
 
 const RemoveButton = ({ onRemove }) => (
 	<TouchableOpacity onPress={onRemove}>
-		<Text style={styles.destroy}>X</Text>
+		<Trash width={15} height={15} fill={'#cc9a9a'} />
 	</TouchableOpacity>
 );
 
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
 	},
 	doneText: {
 		color: '#4d4d4d',
-		fontSize: 20
+		fontSize: 15
 	},
 	complete: {
 		textDecorationLine: 'line-through'
@@ -100,7 +102,7 @@ const styles = StyleSheet.create({
 		color: '#4d4d4d'
 	},
 	destroy: {
-		fontSize: 20,
+		fontSize: 15,
 		color: '#cc9a9a'
 	}
 });

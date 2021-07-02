@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import FaisLeIcon from '../assets/svgs/fais-le-icon';
 
 const Header = (props) => (
 	<View style={styles.header}>
 		<TouchableOpacity onPress={props.onToggleAllComplete}>
-			<Text style={styles.toggleIcon}>{String.fromCharCode(10003)}</Text>
+			<FaisLeIcon width={25} height={25} />
 		</TouchableOpacity>
 
 		<TextInput
