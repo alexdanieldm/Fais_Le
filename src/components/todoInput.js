@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import FaisLeIcon from '../assets/svgs/fais-le-icon';
+import Check from '../assets/svgs/check';
 
 const Header = (props) => (
 	<View style={styles.header}>
 		<TouchableOpacity onPress={props.onToggleAllComplete}>
-			<FaisLeIcon width={25} height={25} />
+			<Check width={25} height={25} fill={'#CCC'} />
 		</TouchableOpacity>
 
 		<TextInput

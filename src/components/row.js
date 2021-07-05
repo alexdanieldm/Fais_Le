@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
 	container: {
 		padding: 10,
 		flexDirection: 'row',
-		alignItems: 'flex-start',
+		alignItems: 'center',
 		justifyContent: 'space-between'
 	},
 	input: {
@@ -100,10 +100,6 @@ const styles = StyleSheet.create({
 	text: {
 		fontSize: 24,
 		color: '#4d4d4d'
-	},
-	destroy: {
-		fontSize: 15,
-		color: '#cc9a9a'
 	}
 });
 export default Row;
