@@ -1,10 +1,10 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 const SvgComponet = (props) => {
 	return (
-		<View style={styles.container}>
+		<View>
 			<Svg
 				aria-hidden="true"
 				data-icon="trash-alt"
@@ -20,13 +20,5 @@ const SvgComponet = (props) => {
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center'
-	}
-});
 
 export default SvgComponet;

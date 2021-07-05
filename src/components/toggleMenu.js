@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 import UserCircle from '../assets/svgs/user-circle';
 
-const LogOutButton = ({ onPress }) => (
+const UserMenu = ({ onPress }) => (
 	<TouchableOpacity style={styles.button} onPress={onPress}>
 		<UserCircle width={30} height={30} />
 	</TouchableOpacity>
@@ -15,4 +15,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default LogOutButton;
+export default UserMenu;
