@@ -1,14 +1,14 @@
 {
 	"expo": {
-		"name": "To Do",
-		"slug": "To-Do",
+		"name": "Fais Le",
+		"slug": "Fais-Le",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/icon.png",
+		"icon": "./assets/fais-le-icon.png",
 		"splash": {
-			"image": "./assets/splash.png",
+			"image": "./assets/fais-le-splash.png",
 			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
+			"backgroundColor": "#0096bd"
 		},
 		"updates": {
 			"fallbackToCacheTimeout": 0
@@ -19,12 +19,12 @@
 		},
 		"android": {
 			"adaptiveIcon": {
-				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#FFFFFF"
+				"foregroundImage": "./assets/fais-le-adaptive-icon.png",
+				"backgroundColor": "#0096bd"
 			}
 		},
 		"web": {
-			"favicon": "./assets/favicon.png"
+			"favicon": "./assets/default-favicon.png"
 		}
 	}
 }

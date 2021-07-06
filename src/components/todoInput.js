@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import Check from '../assets/svgs/check';
 
 const Header = (props) => (
 	<View style={styles.header}>
 		<TouchableOpacity onPress={props.onToggleAllComplete}>
-			<Text style={styles.toggleIcon}>{String.fromCharCode(10003)}</Text>
+			<Check width={25} height={25} fill={'#CCC'} />
 		</TouchableOpacity>
 
 		<TextInput
