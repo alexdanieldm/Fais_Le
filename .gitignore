@@ -148,3 +148,9 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+
+### ESLint ###
+.eslintcache
+
+### Jest ###
+coverage
