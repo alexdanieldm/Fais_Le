@@ -4,7 +4,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 
 import Menu from '../src/screens/userMenu';
-import { onSignOut as mockOnSignOut } from '../src/utils/onSignOut';
+import mockOnSignOut from '../src/utils/onSignOut';
 
 jest.mock('../src/utils/onSignOut');
 
@@ -12,9 +12,8 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-const mockGoBack = jest.fn();
-
-test('GoHomeButton navigate to ToDo Screen', async () => {
+test('GoHome button triggers navigation.goBack() prop method', async () => {
+  const mockGoBack = jest.fn();
   const { getByText } = render(<Menu navigation={{ goBack: mockGoBack }} />);
 
   const GoHomeButton = getByText(/go home/i);
@@ -24,14 +23,12 @@ test('GoHomeButton navigate to ToDo Screen', async () => {
   expect(mockGoBack).toHaveBeenCalled();
 });
 
-test('LogOutButton close current user session', async () => {
+test('LogOut button triggers onSignOut function', async () => {
   const { getByText } = render(<Menu />);
 
   const LogOutButton = getByText(/sign out/i);
 
   fireEvent.press(LogOutButton);
 
-  console.log(mockOnSignOut);
-
-  // expect(mockOnSignOut).toHaveBeenCalled();
+  expect(mockOnSignOut).toHaveBeenCalled();
 });
