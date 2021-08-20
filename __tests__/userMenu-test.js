@@ -12,7 +12,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-test('GoHome button triggers navigation.goBack() prop method', async () => {
+test('GoHome button triggers navigation.goBack() prop method', () => {
   const mockGoBack = jest.fn();
   const { getByText } = render(<Menu navigation={{ goBack: mockGoBack }} />);
 
@@ -23,7 +23,7 @@ test('GoHome button triggers navigation.goBack() prop method', async () => {
   expect(mockGoBack).toHaveBeenCalled();
 });
 
-test('LogOut button triggers onSignOut function', async () => {
+test('LogOut button triggers onSignOut function', () => {
   const { getByText } = render(<Menu />);
 
   const LogOutButton = getByText(/sign out/i);
