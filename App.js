@@ -71,7 +71,9 @@ const App = () => {
             <RootStack.Screen
               name="Todo"
               options={({ navigation }) => ({
-                headerRight: () => <ToggleMenu onPress={() => navigation.navigate('Menu')} />,
+                headerRight: () => (
+                  <ToggleMenu onPress={() => navigation.navigate('Menu')} />
+                ),
               })}
             >
               {(props) => <Todo {...props} user={user} />}

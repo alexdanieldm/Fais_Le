@@ -11,7 +11,15 @@ LogBox.ignoreLogs([
   'AsyncStorage has been extracted from react-native core and will be removed in a future release.',
 ]);
 
-import { API_KEY, AUTH_DOMAIN, DATABASE_URL, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } from '@env';
+import {
+  API_KEY,
+  AUTH_DOMAIN,
+  DATABASE_URL,
+  PROJECT_ID,
+  STORAGE_BUCKET,
+  MESSAGING_SENDER_ID,
+  APP_ID,
+} from '@env';
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -27,6 +35,8 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-firebase.firestore().settings({ merge: true, experimentalForceLongPolling: true });
+firebase
+  .firestore()
+  .settings({ merge: true, experimentalForceLongPolling: true });
 
 export { firebase };

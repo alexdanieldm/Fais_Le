@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Button, Keyboard } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Button,
+  Keyboard,
+} from 'react-native';
 
 import { firebase } from '../firebase/config';
 
@@ -86,11 +93,19 @@ const SignUp = ({ navigation }) => {
           secureTextEntry={true}
         />
 
-        <Button title="Create account" onPress={onSignUp} color="#0096bd" accessibilityLabel="Create a new Account" />
+        <Button
+          title="Create account"
+          onPress={onSignUp}
+          color="#0096bd"
+          accessibilityLabel="Create a new Account"
+        />
 
         <Text style={styles.signUp}>
           Already have an account?
-          <Text style={styles.signUpLink} onPress={() => navigation.navigate('LogIn')}>
+          <Text
+            style={styles.signUpLink}
+            onPress={() => navigation.navigate('LogIn')}
+          >
             {' '}
             Log In
           </Text>

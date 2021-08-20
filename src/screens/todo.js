@@ -103,7 +103,9 @@ const Todo = ({ user }) => {
   };
 
   const handleToggleCompleteItem = (key, complete) => {
-    const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+    const targetTodoItemIndex = todoItems.findIndex(
+      (todoItem) => todoItem.key === key,
+    );
     const targetTodoItem = todoItems[targetTodoItemIndex];
     const newTodoItem = { ...targetTodoItem, complete };
 
@@ -124,10 +126,15 @@ const Todo = ({ user }) => {
   };
 
   const handleRemoveToDoItem = (key) => {
-    const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+    const targetTodoItemIndex = todoItems.findIndex(
+      (todoItem) => todoItem.key === key,
+    );
 
     setTodoItems((currentTodoItems) => {
-      return [...currentTodoItems.slice(0, targetTodoItemIndex), ...currentTodoItems.slice(targetTodoItemIndex + 1)];
+      return [
+        ...currentTodoItems.slice(0, targetTodoItemIndex),
+        ...currentTodoItems.slice(targetTodoItemIndex + 1),
+      ];
     });
 
     todoItemsCollection
@@ -139,7 +146,9 @@ const Todo = ({ user }) => {
   };
 
   const handleToggleEditing = (key, editing) => {
-    const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+    const targetTodoItemIndex = todoItems.findIndex(
+      (todoItem) => todoItem.key === key,
+    );
     const targetTodoItem = todoItems[targetTodoItemIndex];
     const newTodoItem = { ...targetTodoItem, editing };
 
@@ -153,7 +162,9 @@ const Todo = ({ user }) => {
   };
 
   const handleUpdateTodoItem = (key, text) => {
-    const targetTodoItemIndex = todoItems.findIndex((todoItem) => todoItem.key === key);
+    const targetTodoItemIndex = todoItems.findIndex(
+      (todoItem) => todoItem.key === key,
+    );
     const targetTodoItem = todoItems[targetTodoItemIndex];
     const newTodoItem = { ...targetTodoItem, text };
 
@@ -180,7 +191,9 @@ const Todo = ({ user }) => {
   };
 
   const handleDeleteAllCompleted = () => {
-    const incompletedTodoItems = todoItems.filter(({ complete }) => complete === false);
+    const incompletedTodoItems = todoItems.filter(
+      ({ complete }) => complete === false,
+    );
 
     setTodoItems(incompletedTodoItems);
 
@@ -221,9 +234,13 @@ const Todo = ({ user }) => {
             return (
               <Row
                 key={item.key}
-                onComplete={(complete) => handleToggleCompleteItem(item.key, complete)}
+                onComplete={(complete) =>
+                  handleToggleCompleteItem(item.key, complete)
+                }
                 onRemove={() => handleRemoveToDoItem(item.key)}
-                onToggleEdit={(editing) => handleToggleEditing(item.key, editing)}
+                onToggleEdit={(editing) =>
+                  handleToggleEditing(item.key, editing)
+                }
                 onUpdate={(text) => handleUpdateTodoItem(item.key, text)}
                 {...item}
               />

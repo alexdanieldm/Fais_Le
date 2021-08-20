@@ -1,31 +1,37 @@
-/**
- * @format
- */
-
 import 'react-native';
-import React from 'react';
 
-// Note: test renderer must be required after react-native.
-import renderer from 'react-test-renderer';
+import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 
 import Menu from '../src/screens/userMenu';
-import onSignOut from '../src/utils/onSignOut';
+import { onSignOut as mockOnSignOut } from '../src/utils/onSignOut';
 
-describe('Screen', () => {
-	test('Should render correctly', () => {
-		const menuJSON = renderer.create(<Menu />).toJSON();
-		expect(menuJSON).toMatchSnapshot();
-	});
+jest.mock('../src/utils/onSignOut');
+
+afterEach(() => {
+  jest.clearAllMocks();
 });
 
-describe('Go Home Button', () => {
-	test('Should navigate to ToDo screen', async () => {
-		const goBack = jest.fn();
-		const { findByText } = render(<Menu navigation={{ goBack }} />);
-		const GoHomeButton = await findByText('Go Home');
+const mockGoBack = jest.fn();
 
-		fireEvent(GoHomeButton, 'press');
-		expect(goBack).toHaveBeenCalled();
-	});
+test('GoHomeButton navigate to ToDo Screen', async () => {
+  const { getByText } = render(<Menu navigation={{ goBack: mockGoBack }} />);
+
+  const GoHomeButton = getByText(/go home/i);
+
+  fireEvent.press(GoHomeButton);
+
+  expect(mockGoBack).toHaveBeenCalled();
+});
+
+test('LogOutButton close current user session', async () => {
+  const { getByText } = render(<Menu />);
+
+  const LogOutButton = getByText(/sign out/i);
+
+  fireEvent.press(LogOutButton);
+
+  console.log(mockOnSignOut);
+
+  // expect(mockOnSignOut).toHaveBeenCalled();
 });

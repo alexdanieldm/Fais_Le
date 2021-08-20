@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Switch,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 
 import Trash from '../assets/svgs/trash';
 
 const Item = ({ complete, onToggleEdit, text }) => (
-  <TouchableOpacity style={styles.textWrap} onLongPress={() => onToggleEdit(true)}>
+  <TouchableOpacity
+    style={styles.textWrap}
+    onLongPress={() => onToggleEdit(true)}
+  >
     <Text style={[styles.text, complete && styles.complete]}>{text}</Text>
   </TouchableOpacity>
 );
@@ -17,7 +27,13 @@ const RemoveButton = ({ onRemove }) => (
 
 const EditButton = ({ text, onUpdate }) => (
   <View style={styles.textWrap}>
-    <TextInput style={styles.input} value={text} onChangeText={onUpdate} autoFocus multiline />
+    <TextInput
+      style={styles.input}
+      value={text}
+      onChangeText={onUpdate}
+      autoFocus
+      multiline
+    />
   </View>
 );
 
@@ -51,10 +67,18 @@ const Row = (props) => {
       {props.editing ? (
         <EditButton text={props.text} onUpdate={props.onUpdate} />
       ) : (
-        <Item onToggleEdit={props.onToggleEdit} text={props.text} complete={itsComplete} />
+        <Item
+          onToggleEdit={props.onToggleEdit}
+          text={props.text}
+          complete={itsComplete}
+        />
       )}
 
-      {props.editing ? <DoneButton onToggleEdit={props.onToggleEdit} /> : <RemoveButton onRemove={props.onRemove} />}
+      {props.editing ? (
+        <DoneButton onToggleEdit={props.onToggleEdit} />
+      ) : (
+        <RemoveButton onRemove={props.onRemove} />
+      )}
     </View>
   );
 };
