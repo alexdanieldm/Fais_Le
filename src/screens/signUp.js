@@ -1,152 +1,165 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Button, Keyboard } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Button,
+  Keyboard,
+} from 'react-native';
 
 import { firebase } from '../firebase/config';
 
 import Loading from '../components/loading';
 
-const logIn = ({ navigation }) => {
-	const [ loading, setLoading ] = useState(false);
+const SignUp = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
 
-	const [ email, setEmail ] = useState('');
-	const [ password, setPassword ] = useState('');
-	const [ fullName, setFullName ] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
 
-	const onSignUp = () => {
-		Keyboard.dismiss();
+  const onSignUp = () => {
+    Keyboard.dismiss();
 
-		setLoading(true);
-		const usersCollection = firebase.firestore().collection('users');
+    setLoading(true);
+    const usersCollection = firebase.firestore().collection('users');
 
-		firebase
-			.auth()
-			.createUserWithEmailAndPassword(email, password)
-			.then((userCredential) => {
-				var user = userCredential.user;
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        var user = userCredential.user;
 
-				const data = {
-					fullName,
-					email,
-					joined: firebase.firestore.FieldValue.serverTimestamp()
-				};
+        const data = {
+          fullName,
+          email,
+          joined: firebase.firestore.FieldValue.serverTimestamp(),
+        };
 
-				usersCollection.doc(user.uid).set(data).catch((error) => {
-					alert('Error creating your new Account. Please try again later');
-					console.error(error);
-				});
-			})
-			.catch((error) => {
-				setLoading(false);
+        usersCollection
+          .doc(user.uid)
+          .set(data)
+          .catch((error) => {
+            alert('Error creating your new Account. Please try again later');
+            console.error(error);
+          });
+      })
+      .catch((error) => {
+        setLoading(false);
 
-				setFullName('');
-				setEmail('');
-				setPassword('');
+        setFullName('');
+        setEmail('');
+        setPassword('');
 
-				alert(error.message);
-			});
-	};
+        alert(error.message);
+      });
+  };
 
-	return (
-		<View style={styles.container}>
-			<View style={styles.content}>
-				<Text style={styles.header}>Create Account</Text>
+  return (
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.header}>Create Account</Text>
 
-				<Text style={styles.label}>Full Name</Text>
+        <Text style={styles.label}>Full Name</Text>
 
-				<TextInput
-					style={styles.input}
-					placeholder="Alex Duran"
-					onChangeText={(fullName) => setFullName(fullName)}
-					defaultValue={fullName}
-					blurOnSubmit={false}
-					keyboardType="default"
-				/>
+        <TextInput
+          style={styles.input}
+          placeholder="Alex Duran"
+          onChangeText={(inputFullName) => setFullName(inputFullName)}
+          defaultValue={fullName}
+          blurOnSubmit={false}
+          keyboardType="default"
+        />
 
-				<Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>Email</Text>
 
-				<TextInput
-					style={styles.input}
-					placeholder="example@mail.com"
-					onChangeText={(email) => setEmail(email)}
-					defaultValue={email}
-					blurOnSubmit={false}
-					keyboardType="email-address"
-				/>
+        <TextInput
+          style={styles.input}
+          placeholder="example@mail.com"
+          onChangeText={(inputEmail) => setEmail(inputEmail)}
+          defaultValue={email}
+          blurOnSubmit={false}
+          keyboardType="email-address"
+        />
 
-				<Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>Password</Text>
 
-				<TextInput
-					style={styles.input}
-					placeholder="Enter password"
-					onChangeText={(password) => setPassword(password)}
-					defaultValue={password}
-					secureTextEntry={true}
-				/>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter password"
+          onChangeText={(inputPassword) => setPassword(inputPassword)}
+          defaultValue={password}
+          secureTextEntry={true}
+        />
 
-				<Button
-					title="Create account"
-					onPress={onSignUp}
-					color="#0096bd"
-					accessibilityLabel="Create a new Account"
-				/>
+        <Button
+          title="Create account"
+          onPress={onSignUp}
+          color="#0096bd"
+          accessibilityLabel="Create a new Account"
+        />
 
-				<Text style={styles.signUp}>
-					Already have an account?
-					<Text style={styles.signUpLink} onPress={() => navigation.navigate('LogIn')}>
-						{' '}
-						Log In
-					</Text>
-				</Text>
-			</View>
-			<Loading loading={loading} />
-		</View>
-	);
+        <Text style={styles.signUp}>
+          Already have an account?
+          <Text
+            style={styles.signUpLink}
+            onPress={() => navigation.navigate('LogIn')}
+          >
+            {' '}
+            Log In
+          </Text>
+        </Text>
+      </View>
+      <Loading loading={loading} />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#F5F5F5'
-	},
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
 
-	header: {
-		fontWeight: 'bold',
-		fontSize: 20,
-		paddingBottom: 25
-	},
+  header: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    paddingBottom: 25,
+  },
 
-	content: {
-		flex: 1,
-		justifyContent: 'center',
-		paddingHorizontal: 20,
-		margin: 16
-	},
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    margin: 16,
+  },
 
-	label: {
-		paddingLeft: 5,
-		paddingBottom: 5,
-		fontSize: 14
-	},
+  label: {
+    paddingLeft: 5,
+    paddingBottom: 5,
+    fontSize: 14,
+  },
 
-	input: {
-		borderColor: '#dddddd',
-		borderWidth: 1,
-		borderRadius: 5,
-		paddingVertical: 5,
-		paddingHorizontal: 12,
-		marginBottom: 20
-	},
+  input: {
+    borderColor: '#dddddd',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    marginBottom: 20,
+  },
 
-	signUp: {
-		marginTop: 18,
-		fontSize: 13,
-		alignSelf: 'center'
-	},
+  signUp: {
+    marginTop: 18,
+    fontSize: 13,
+    alignSelf: 'center',
+  },
 
-	signUpLink: {
-		color: '#0096bd',
-		fontWeight: 'bold'
-	}
+  signUpLink: {
+    color: '#0096bd',
+    fontWeight: 'bold',
+  },
 });
 
-export default logIn;
+export default SignUp;

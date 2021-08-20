@@ -20,88 +20,86 @@ import FaisLeIcon from './src/assets/svgs/fais-le-icon';
 const RootStack = createStackNavigator();
 
 const App = () => {
-	const [ loading, setLoading ] = useState(false);
-	const [user, setUser] = useState(null);
-	
-	useEffect(() => {
-		setLoading(true);
-		
-		firebase.auth().onAuthStateChanged( user => {
-			if (user) {
-				const usersCollection = firebase.firestore().collection('users');
-				usersCollection
-				.doc(user.uid)
-				.get()
-				.then(() => {
-					setUser(user)
-					setLoading(false)
-				})
-				.catch((error) => {
-					firebase.auth().signOut()
-					
-					setLoading(false)
-					alert(error.message)
-				})
-			}
-			else {
-				setUser(null)
-				setLoading(false);
-			}
-			});
-		}, []);
-		
-		if (loading) {
-			return <Loading loading={loading} />;
-		}
-		
-		return (
-			<NavigationContainer>
-				<RootStack.Navigator
-					screenOptions={{
-						headerShown: true,
-						headerTitle: <FaisLeIcon width={35} height={35} /> ,
-						headerTitleAlign: user ? 'left' : 'center',
-						headerStyle: {
-							backgroundColor: '#0096bd'
-						},
-						headerTintColor: '#ffffff',
-					}}
-				>				
-					{user ? (
-						<>
-							<RootStack.Screen name="Todo"
-								options={ ({ navigation }) => ({
-									headerRight: () => (
-										<ToggleMenu onPress={() => navigation.navigate('Menu')} />
-									)
-								})}
-							>
-								{props => <Todo {...props} user={user} />}
-							</RootStack.Screen>
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
-							<RootStack.Screen 
-								name="Menu" 
-								component={UserMenu}
-								options={{
-									headerShown:true,
-									headerTitle: '' ,
-									headerBackTitle: 'Close',
-									headerTransparent: true,
-									cardShadowEnabled: false,
-								}}
-							/>
-						</>
-					) : (
-						<>
-							<RootStack.Screen name="LogIn" component={LogIn} />
-							<RootStack.Screen name="SignUp" component={SignUp} />
-						</>
-					)}
-				</RootStack.Navigator>
-			</NavigationContainer>
-		);
+  useEffect(() => {
+    setLoading(true);
 
+    firebase.auth().onAuthStateChanged((authUser) => {
+      if (authUser) {
+        const usersCollection = firebase.firestore().collection('users');
+        usersCollection
+          .doc(authUser.uid)
+          .get()
+          .then(() => {
+            setUser(authUser);
+            setLoading(false);
+          })
+          .catch((error) => {
+            firebase.auth().signOut();
+
+            setLoading(false);
+            alert(error.message);
+          });
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
+    });
+  }, []);
+
+  if (loading) {
+    return <Loading loading={loading} />;
+  }
+
+  return (
+    <NavigationContainer>
+      <RootStack.Navigator
+        screenOptions={{
+          headerShown: true,
+          headerTitle: <FaisLeIcon width={35} height={35} />,
+          headerTitleAlign: user ? 'left' : 'center',
+          headerStyle: {
+            backgroundColor: '#0096bd',
+          },
+          headerTintColor: '#ffffff',
+        }}
+      >
+        {user ? (
+          <>
+            <RootStack.Screen
+              name="Todo"
+              options={({ navigation }) => ({
+                headerRight: () => (
+                  <ToggleMenu onPress={() => navigation.navigate('Menu')} />
+                ),
+              })}
+            >
+              {(props) => <Todo {...props} user={user} />}
+            </RootStack.Screen>
+
+            <RootStack.Screen
+              name="Menu"
+              component={UserMenu}
+              options={{
+                headerShown: true,
+                headerTitle: '',
+                headerBackTitle: 'Close',
+                headerTransparent: true,
+                cardShadowEnabled: false,
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <RootStack.Screen name="LogIn" component={LogIn} />
+            <RootStack.Screen name="SignUp" component={SignUp} />
+          </>
+        )}
+      </RootStack.Navigator>
+    </NavigationContainer>
+  );
 };
-
 
 export default App;
