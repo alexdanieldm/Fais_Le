@@ -1,10 +1,10 @@
 import 'react-native';
 
 import { firebase as mockFirebase } from '../src/firebase/config';
-import { build, fake, sequence } from '@jackfranklin/test-data-bot';
+import { build, fake } from '@jackfranklin/test-data-bot';
 
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, act } from '@testing-library/react-native';
 
 import Todo from '../src/screens/todo';
 
@@ -34,5 +34,7 @@ beforeAll(() => {
 });
 
 test('Add Item', () => {
-  expect(1).toBe(1);
+  act(() => {
+    render(<Todo user={data} />);
+  });
 });

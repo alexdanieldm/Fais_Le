@@ -1,10 +1,12 @@
 module.exports = {
   preset: 'react-native',
-  // setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
+  setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
   setupFiles: ['./node_modules/react-native-gesture-handler/jestSetup.js'],
   transformIgnorePatterns: [
     'node_modules/(?!(jest-)?@?react-native|@react-native-community|@react-navigation)',
   ],
+  watchPathIgnorePatterns: ['<rootDir>/node_modules'],
+
   collectCoverageFrom: [
     '**/src/**/*.js',
     '!**/src/assets/**',
