@@ -58,6 +58,7 @@ const Row = (props) => {
   return (
     <View style={styles.container}>
       <Switch
+        accessibilityLabel={`${props.text}-switch`}
         thumbColor={props.complete ? '#f4f3f4' : '#f4f3f4'}
         trackColor={{ true: '#45C8EB', false: '#bababa' }}
         value={itsComplete}
