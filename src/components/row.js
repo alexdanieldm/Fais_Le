@@ -19,8 +19,11 @@ const Item = ({ complete, onToggleEdit, text }) => (
   </TouchableOpacity>
 );
 
-const RemoveButton = ({ onRemove }) => (
-  <TouchableOpacity onPress={onRemove}>
+const RemoveButton = ({ onRemove, text = '' }) => (
+  <TouchableOpacity
+    accessibilityLabel={`${text}-delete-button`}
+    onPress={onRemove}
+  >
     <Trash width={15} height={15} fill={'#cc9a9a'} />
   </TouchableOpacity>
 );
@@ -78,7 +81,7 @@ const Row = (props) => {
       {props.editing ? (
         <DoneButton onToggleEdit={props.onToggleEdit} />
       ) : (
-        <RemoveButton onRemove={props.onRemove} />
+        <RemoveButton text={props.text} onRemove={props.onRemove} />
       )}
     </View>
   );

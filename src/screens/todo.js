@@ -224,8 +224,9 @@ const Todo = ({ user }) => {
         onToggleAllComplete={handleToggleCompleteAllItems}
       />
 
-      <View style={styles.content} testID="todo-list">
+      <View style={styles.content}>
         <FlatList
+          accessibilityLabel="todo-list"
           style={styles.list}
           data={filterItems}
           extraData={todoItems}
