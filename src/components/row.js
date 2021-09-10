@@ -20,10 +20,7 @@ const Item = ({ complete, onToggleEdit, text }) => (
 );
 
 const RemoveButton = ({ onRemove, text = '' }) => (
-  <TouchableOpacity
-    accessibilityLabel={`${text}-delete-button`}
-    onPress={onRemove}
-  >
+  <TouchableOpacity accessibilityLabel="delete-button" onPress={onRemove}>
     <Trash width={15} height={15} fill={'#cc9a9a'} />
   </TouchableOpacity>
 );
@@ -61,7 +58,6 @@ const Row = (props) => {
   return (
     <View style={styles.container}>
       <Switch
-        accessibilityLabel={`${props.text}-switch`}
         thumbColor={props.complete ? '#f4f3f4' : '#f4f3f4'}
         trackColor={{ true: '#45C8EB', false: '#bababa' }}
         value={itsComplete}
