@@ -15,7 +15,12 @@ const Item = ({ complete, onToggleEdit, text }) => (
     style={styles.textWrap}
     onLongPress={() => onToggleEdit(true)}
   >
-    <Text style={[styles.text, complete && styles.complete]}>{text}</Text>
+    <Text
+      accessibilityLabel="item-text"
+      style={[styles.text, complete && styles.complete]}
+    >
+      {text}
+    </Text>
   </TouchableOpacity>
 );
 

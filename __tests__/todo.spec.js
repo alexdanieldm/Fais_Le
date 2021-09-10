@@ -49,16 +49,21 @@ test('user is able to add an item to the to-do list', async () => {
 
 test('user should be able to toggle to-do item', async () => {
   //* render the todo list
-  const { getByPlaceholderText, getByLabelText } = render(<Todo user={user} />);
+  const { getByPlaceholderText, getByRole, getByText, debug } = render(
+    <Todo user={user} />,
+  );
 
   //* type in the input field & click submits
   addItem(getByPlaceholderText(/What needs to be done?/i), todoItem.word);
-  // const itemSwitch = getByLabelText(`${todoItem.word}-switch`);
+
+  //* get ToDo item text and switch
+  const itemText = getByText(todoItem.word);
 
   //* toggle switch
-  // fireEvent(itemSwitch, 'onValueChange', true);
+  fireEvent(getByRole('switch'), 'onValueChange', true);
 
   //* todo item should be active
+  expect(itemText).toHaveStyle([{ textDecorationLine: 'line-through' }]);
 });
 
 test('user should able to delete a to-do item ', async () => {
