@@ -33,6 +33,7 @@ const RemoveButton = ({ onRemove, text = '' }) => (
 const EditButton = ({ text, onUpdate }) => (
   <View style={styles.textWrap}>
     <TextInput
+      accessibilityLabel="update-item-text-input"
       style={styles.input}
       value={text}
       onChangeText={onUpdate}
