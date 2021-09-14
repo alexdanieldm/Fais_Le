@@ -1,34 +1,14 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { build, fake } from '@jackfranklin/test-data-bot';
-import { firebase as mockFirebase } from '../src/firebase/config';
+import { userDataBuilder, itemDataBuilder } from 'dataBuilders';
+import { submitInput } from 'submitInput';
+// import { firebase as mockFirebase } from '../src/firebase/config';
+// mockFirebase.firestore().useEmulator('localhost', 8080);
 
 import Todo from '../src/screens/todo';
 
-// mockFirebase.firestore().useEmulator('localhost', 8080);
-
-const userDataBuilder = build('User Data', {
-  fields: {
-    uid: fake((f) => f.random.uuid()),
-    fullName: fake((f) => f.name.findName()),
-    email: fake((f) => f.internet.email()),
-  },
-});
 const user = userDataBuilder();
-
-const itemBuilder = build('Fake Item', {
-  fields: {
-    key: fake((f) => f.random.uuid()),
-    word: fake((f) => f.lorem.word()),
-    sentence: fake((f) => f.lorem.sentence(3)),
-  },
-});
-const todoItem = itemBuilder();
-
-const submitInputText = (targetInput, itemText) => {
-  fireEvent.changeText(targetInput, itemText);
-  fireEvent(targetInput, 'submitEditing');
-};
+const todoItem = itemDataBuilder();
 
 test('user is able to add an item to the to-do list', async () => {
   //* render the todo screen
@@ -41,10 +21,7 @@ test('user is able to add an item to the to-do list', async () => {
   const todoList = getByLabelText(/todo-list/i);
 
   //* type in the input field & click submits
-  submitInputText(
-    getByPlaceholderText(/What needs to be done?/i),
-    todoItem.word,
-  );
+  submitInput(getByPlaceholderText(/What needs to be done?/i), todoItem.word);
 
   //* todo item should be added to the list and counter should increse by one
   expect(todoList).toContainElement(getByText(todoItem.word));
@@ -58,10 +35,7 @@ test('user should be able to toggle to-do item', async () => {
   );
 
   //* type in the input field & click submits
-  submitInputText(
-    getByPlaceholderText(/What needs to be done?/i),
-    todoItem.word,
-  );
+  submitInput(getByPlaceholderText(/What needs to be done?/i), todoItem.word);
 
   //* get to-do item text and switch
   const itemText = getByText(todoItem.word);
@@ -84,10 +58,7 @@ test('user should be able to update to-do item text', async () => {
   } = render(<Todo user={user} />);
 
   //* type in the input field & click submits
-  submitInputText(
-    getByPlaceholderText(/What needs to be done?/i),
-    todoItem.word,
-  );
+  submitInput(getByPlaceholderText(/What needs to be done?/i), todoItem.word);
   const todoList = getByLabelText(/todo-list/i);
 
   //* Long press to-do item
@@ -116,10 +87,7 @@ test('user should able to delete a to-do item ', async () => {
   const counter = getByText(/Items: */i);
 
   //* type in the input field & click submits
-  submitInputText(
-    getByPlaceholderText(/What needs to be done?/i),
-    todoItem.word,
-  );
+  submitInput(getByPlaceholderText(/What needs to be done?/i), todoItem.word);
 
   //* get to-do list and items counter
   const deleteButton = getByLabelText('delete-button');
