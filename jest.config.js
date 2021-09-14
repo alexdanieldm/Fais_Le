@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
   preset: 'jest-expo',
   setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
@@ -7,7 +8,12 @@ module.exports = {
     'node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)',
   ],
   watchPathIgnorePatterns: ['<rootDir>/node_modules'],
-
+  moduleDirectories: [
+    'node_modules',
+    path.join(__dirname, 'src'),
+    'shared',
+    path.join(__dirname, 'test'),
+  ],
   collectCoverageFrom: [
     '**/src/**/*.js',
     '!**/src/assets/**',

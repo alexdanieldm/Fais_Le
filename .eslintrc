@@ -1,13 +1,11 @@
 {
   "root": true,
-  // "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2019,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
     }
-    // "project": "./tsconfig.json"
   },
   "plugins": ["testing-library"],
   "extends": [
@@ -21,5 +19,17 @@
     "no-alert": "off",
     "no-unused-vars": "off",
     "testing-library/prefer-screen-queries": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/__tests__/**"],
+      "settings": {
+        "import/resolver": {
+          "jest": {
+            "jestConfigFile": "./jest.config.js"
+          }
+        }
+      }
+    }
+  ]
 }
