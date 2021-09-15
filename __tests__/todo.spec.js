@@ -2,8 +2,6 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { userDataBuilder, itemDataBuilder } from 'dataBuilders';
 import { submitInput } from 'submitInput';
-// import { firebase as mockFirebase } from '../src/firebase/config';
-// mockFirebase.firestore().useEmulator('localhost', 8080);
 
 import Todo from '../src/screens/todo';
 
@@ -30,32 +28,26 @@ test('user is able to add an item to the to-do list', async () => {
 
 test('user should be able to toggle to-do item', async () => {
   //* render the todo screen
-  const { getByPlaceholderText, getByRole, getByText, debug } = render(
+  const { getByPlaceholderText, getByRole, getByText } = render(
     <Todo user={user} />,
   );
 
   //* type in the input field & click submits
   submitInput(getByPlaceholderText(/What needs to be done?/i), todoItem.word);
 
-  //* get to-do item text and switch
-  const itemText = getByText(todoItem.word);
-
-  //* toggle switch
+  //* toggle to-do item switch
   fireEvent(getByRole('switch'), 'onValueChange', true);
 
   //* to-do item should be active
-  expect(itemText).toHaveStyle([{ textDecorationLine: 'line-through' }]);
+  expect(getByText(todoItem.word)).toHaveStyle([
+    { textDecorationLine: 'line-through' },
+  ]);
 });
 
 test('user should be able to update to-do item text', async () => {
   //* render the todo screen
-  const {
-    getByPlaceholderText,
-    getByText,
-    getByLabelText,
-    queryByText,
-    debug,
-  } = render(<Todo user={user} />);
+  const { getByPlaceholderText, getByText, getByLabelText, queryByText } =
+    render(<Todo user={user} />);
 
   //* type in the input field & click submits
   submitInput(getByPlaceholderText(/What needs to be done?/i), todoItem.word);
@@ -70,11 +62,11 @@ test('user should be able to update to-do item text', async () => {
     todoItem.sentence,
   );
 
-  //* Press save button
+  //* Press to-do item save button
   fireEvent.press(getByText(/save/i));
 
   //* to-do item previus text should have change
-  expect(queryByText(todoItem.word)).toBe(null);
+  expect(queryByText(todoItem.word)).toBeNull();
   expect(todoList).toContainElement(getByText(todoItem.sentence));
 });
 
@@ -83,6 +75,7 @@ test('user should able to delete a to-do item ', async () => {
   const { getByText, getByPlaceholderText, getByLabelText, queryByText } =
     render(<Todo user={user} />);
 
+  const todoList = getByLabelText(/todo-list/i);
   //* get to-do list and items counter
   const counter = getByText(/Items: */i);
 
@@ -94,6 +87,7 @@ test('user should able to delete a to-do item ', async () => {
   fireEvent(deleteButton, 'onPress');
 
   //* todo item should be remove from the list and counter should decrese by one
-  expect(queryByText(todoItem.word)).toBe(null);
+  expect(todoList).not.toContainElement(queryByText(todoItem.word));
+  expect(queryByText(todoItem.word)).toBeNull();
   expect(counter).toHaveTextContent(/ *0/i);
 });
