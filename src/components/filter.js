@@ -31,7 +31,11 @@ const Footer = (props) => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.clear} onPress={props.onClearComplete}>
+      <TouchableOpacity
+        accessibilityLabel="clear-completed-items-button"
+        style={styles.clear}
+        onPress={props.onClearComplete}
+      >
         <Text style={styles.label}>Clear Completed</Text>
       </TouchableOpacity>
     </View>

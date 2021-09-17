@@ -4,7 +4,10 @@ import Check from '../assets/svgs/check';
 
 const Header = (props) => (
   <View style={styles.header}>
-    <TouchableOpacity onPress={props.onToggleAllComplete}>
+    <TouchableOpacity
+      accessibilityLabel="complete-all-button"
+      onPress={props.onToggleAllComplete}
+    >
       <Check width={25} height={25} fill={'#CCC'} />
     </TouchableOpacity>
 
