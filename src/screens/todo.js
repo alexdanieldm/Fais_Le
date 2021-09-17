@@ -226,6 +226,7 @@ const Todo = ({ user }) => {
 
       <View style={styles.content}>
         <FlatList
+          accessibilityLabel="todo-list"
           style={styles.list}
           data={filterItems}
           extraData={todoItems}

@@ -15,12 +15,17 @@ const Item = ({ complete, onToggleEdit, text }) => (
     style={styles.textWrap}
     onLongPress={() => onToggleEdit(true)}
   >
-    <Text style={[styles.text, complete && styles.complete]}>{text}</Text>
+    <Text
+      accessibilityLabel="item-text"
+      style={[styles.text, complete && styles.complete]}
+    >
+      {text}
+    </Text>
   </TouchableOpacity>
 );
 
-const RemoveButton = ({ onRemove }) => (
-  <TouchableOpacity onPress={onRemove}>
+const RemoveButton = ({ onRemove, text = '' }) => (
+  <TouchableOpacity accessibilityLabel="delete-button" onPress={onRemove}>
     <Trash width={15} height={15} fill={'#cc9a9a'} />
   </TouchableOpacity>
 );
@@ -28,6 +33,7 @@ const RemoveButton = ({ onRemove }) => (
 const EditButton = ({ text, onUpdate }) => (
   <View style={styles.textWrap}>
     <TextInput
+      accessibilityLabel="update-item-text-input"
       style={styles.input}
       value={text}
       onChangeText={onUpdate}
@@ -77,7 +83,7 @@ const Row = (props) => {
       {props.editing ? (
         <DoneButton onToggleEdit={props.onToggleEdit} />
       ) : (
-        <RemoveButton onRemove={props.onRemove} />
+        <RemoveButton text={props.text} onRemove={props.onRemove} />
       )}
     </View>
   );
