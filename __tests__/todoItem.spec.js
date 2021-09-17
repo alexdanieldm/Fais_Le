@@ -86,7 +86,7 @@ test('user should able to delete a to-do item ', async () => {
   const deleteButton = getByLabelText('delete-button');
   fireEvent(deleteButton, 'onPress');
 
-  //* todo item should be remove from the list and counter should decrese by one
+  //* to-do item should be remove from the list and counter should decrese by one
   expect(todoList).not.toContainElement(queryByText(todoItem.word));
   expect(queryByText(todoItem.word)).toBeNull();
   expect(counter).toHaveTextContent(/ *0/i);
