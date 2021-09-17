@@ -75,8 +75,8 @@ test('user should able to delete a to-do item ', async () => {
   const { getByText, getByPlaceholderText, getByLabelText, queryByText } =
     render(<Todo user={user} />);
 
-  const todoList = getByLabelText(/todo-list/i);
   //* get to-do list and items counter
+  const todoList = getByLabelText(/todo-list/i);
   const counter = getByText(/Items: */i);
 
   //* type in the input field & click submits
