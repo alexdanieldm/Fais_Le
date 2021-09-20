@@ -13,14 +13,12 @@ test('all item should be toggle at the same time', () => {
   const { getByPlaceholderText, getByText, getByLabelText, getAllByRole } =
     render(<Todo user={user} />);
 
-  //* get items counter
-  const counter = getByText(/Items: */i);
+  //* get to-do list, items counter and input
+  const counter = getByText(/active: */i);
+  const input = getByPlaceholderText(/What needs to be done?/i);
 
   //* type in the input field & click submits multiple times
-  submitMultiples(
-    getByPlaceholderText(/What needs to be done?/i),
-    todoItem.extraWords,
-  );
+  submitMultiples(input, todoItem.extraWords);
 
   //* Press toggle-all button
   fireEvent.press(getByLabelText('complete-all-button'));
@@ -31,8 +29,9 @@ test('all item should be toggle at the same time', () => {
   //* to-do list counter should decrease to zero
   expect(counter).toHaveTextContent(/ *0/i);
 
-  //* check value prop of all switch should be true
+  //* check all switches with words
   switchArray.forEach((switchElement) => {
+    //* value prop should be true
     expect(switchElement).toHaveProp('value', true);
   });
 });
@@ -45,18 +44,15 @@ test('all completed item should be deleted at the same time', () => {
     getByLabelText,
     getAllByRole,
     queryByText,
-    debug,
   } = render(<Todo user={user} />);
 
-  //* get to-do list and items counter
+  //* get to-do list, items counter and input
   const todoList = getByLabelText(/todo-list/i);
-  const counter = getByText(/Items: */i);
+  const counter = getByText(/active: */i);
+  const input = getByPlaceholderText(/What needs to be done?/i);
 
   //* type in the input field & click submits multiple words
-  submitMultiples(
-    getByPlaceholderText(/What needs to be done?/i),
-    todoItem.extraWords,
-  );
+  submitMultiples(input, todoItem.extraWords);
 
   //* get one switch for each to-do item and toggle it
   const switchArray = getAllByRole('switch');
@@ -66,10 +62,7 @@ test('all completed item should be deleted at the same time', () => {
   });
 
   //* type in the input field & click submit sentence
-  submitInput(
-    getByPlaceholderText(/What needs to be done?/i),
-    todoItem.sentence,
-  );
+  submitInput(input, todoItem.sentence);
 
   //* Press toggle-all button
   fireEvent.press(getByLabelText('clear-completed-items-button'));
@@ -77,11 +70,13 @@ test('all completed item should be deleted at the same time', () => {
   //* to-do list counter should decrease to 1
   expect(counter).toHaveTextContent(/ *1/i);
 
+  //* to-do item with a sentence should still be on the list
   expect(todoList).toContainElement(getByText(todoItem.sentence));
 
-  // //* check value prop of all switch should be true
-  todoItem.extraWords.forEach((todoItemWord) => {
-    expect(todoList).not.toContainElement(queryByText(todoItemWord));
-    expect(queryByText(todoItemWord)).toBeNull();
+  // //* check all switches with words
+  todoItem.extraWords.forEach((word) => {
+    //* to-do item should be remove
+    expect(todoList).not.toContainElement(queryByText(word));
+    expect(queryByText(word)).toBeNull();
   });
 });
