@@ -6,7 +6,7 @@ const Footer = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.count}>Items: {props.count}</Text>
+      <Text style={styles.count}>Active: {props.count}</Text>
 
       <View style={styles.filters}>
         <TouchableOpacity

@@ -15,7 +15,7 @@ test('user is able to add an item to the to-do list', async () => {
   );
 
   //* get to-do list and items counter
-  const counter = getByText(/Items: */i);
+  const counter = getByText(/active: */i);
   const todoList = getByLabelText(/todo-list/i);
 
   //* type in the input field & click submits
@@ -77,7 +77,7 @@ test('user should able to delete a to-do item ', async () => {
 
   //* get to-do list and items counter
   const todoList = getByLabelText(/todo-list/i);
-  const counter = getByText(/Items: */i);
+  const counter = getByText(/active: */i);
 
   //* type in the input field & click submits
   submitInput(getByPlaceholderText(/What needs to be done?/i), todoItem.word);
