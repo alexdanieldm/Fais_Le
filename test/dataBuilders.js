@@ -13,6 +13,7 @@ const itemDataBuilder = build('Fake Item', {
     key: fake((f) => f.random.uuid()),
     word: fake((f) => f.lorem.word()),
     sentence: fake((f) => f.lorem.sentence(3)),
+    extraWords: Array.from({ length: 3 }, () => fake((f) => f.lorem.word())),
   },
 });
 

@@ -6,7 +6,7 @@ const Footer = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.count}>Items: {props.count}</Text>
+      <Text style={styles.count}>Active: {props.count}</Text>
 
       <View style={styles.filters}>
         <TouchableOpacity
@@ -31,7 +31,11 @@ const Footer = (props) => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.clear} onPress={props.onClearComplete}>
+      <TouchableOpacity
+        accessibilityLabel="clear-completed-items-button"
+        style={styles.clear}
+        onPress={props.onClearComplete}
+      >
         <Text style={styles.label}>Clear Completed</Text>
       </TouchableOpacity>
     </View>
