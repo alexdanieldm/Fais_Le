@@ -10,6 +10,7 @@ const Footer = (props) => {
 
       <View style={styles.filters}>
         <TouchableOpacity
+          accessibilityLabel="show-all-items-button"
           style={[styles.filter, filter === 'ALL' && styles.selected]}
           onPress={() => props.onFilter('ALL')}
         >
@@ -17,6 +18,7 @@ const Footer = (props) => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          accessibilityLabel="show-active-items-button"
           style={[styles.filter, filter === 'ACTIVE' && styles.selected]}
           onPress={() => props.onFilter('ACTIVE')}
         >
@@ -24,6 +26,7 @@ const Footer = (props) => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          accessibilityLabel="show-completed-items-button"
           style={[styles.filter, filter === 'COMPLETED' && styles.selected]}
           onPress={() => props.onFilter('COMPLETED')}
         >
