@@ -14,11 +14,11 @@ afterEach(() => {
 
 test('button should call navigation.goBack() prop method', () => {
   const mockGoBack = jest.fn();
+
+  // render the todo screen
   const { getByText } = render(<Menu navigation={{ goBack: mockGoBack }} />);
 
-  const GoHomeButton = getByText(/go home/i);
-
-  fireEvent.press(GoHomeButton);
+  fireEvent.press(getByText(/go home/i));
 
   expect(mockGoBack).toHaveBeenCalled();
 });
@@ -26,9 +26,7 @@ test('button should call navigation.goBack() prop method', () => {
 test('button should call onSignOut function', () => {
   const { getByText } = render(<Menu />);
 
-  const LogOutButton = getByText(/sign out/i);
-
-  fireEvent.press(LogOutButton);
+  fireEvent.press(getByText(/sign out/i));
 
   expect(mockOnSignOut).toHaveBeenCalled();
 });
