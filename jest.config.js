@@ -18,16 +18,18 @@ module.exports = {
     '**/src/**/*.js',
     '!**/src/assets/**',
     '!**/src/firebase/**',
+    '!**/src/utils/timedLog.js',
+    '!**/src/utils/onSignOut.js',
     '!**/__tests__/**',
     '!**/__server_tests__/**',
     '!**/node_modules/**',
   ],
   coverageThreshold: {
     global: {
-      statements: 75,
-      branches: 40,
-      functions: 75,
-      lines: 45,
+      statements: 65,
+      branches: 88,
+      functions: 63,
+      lines: 64,
     },
   },
   watchPlugins: [
