@@ -1,6 +1,7 @@
 const path = require('path');
 module.exports = {
   preset: 'jest-expo',
+  testRunner: 'jest-circus/runner',
   setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
   setupFiles: ['./node_modules/react-native-gesture-handler/jestSetup.js'],
   transformIgnorePatterns: [
