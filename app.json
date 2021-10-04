@@ -15,9 +15,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alexdanieldm.faisle"
     },
     "android": {
+      "package": "com.alexdanieldm.faisle",
       "adaptiveIcon": {
         "foregroundImage": "./assets/fais-le-adaptive-icon.png",
         "backgroundColor": "#0096bd"
