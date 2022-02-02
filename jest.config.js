@@ -24,6 +24,8 @@ module.exports = {
     '!**/__tests__/**',
     '!**/__server_tests__/**',
     '!**/node_modules/**',
+    '!**/src/screens/logIn.js',
+    '!**/src/screens/signUp.js',
   ],
   coverageThreshold: {
     global: {
